@@ -2,15 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ToDoApp.Models;
 
 namespace ToDoApp.Interfaces
 {
-    public interface IGenericInFileProvider<T>
+    public interface IInMemoryCategoryProvider
     {
-        public T Get();
-        public ICollection<T> GetAll();
-        public void Create(T data);
-        public void Update(T data);
-        public void Delete(T data);
+        public Category Get(int Id);
+        public ICollection<Category> GetAll();
+        public void Create(Category data);
+        public void Update(Category data, int Id);
+        public void Delete(Category data, int Id);
     }
 }

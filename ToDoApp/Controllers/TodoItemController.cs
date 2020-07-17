@@ -18,25 +18,32 @@ namespace ToDoApp.Controllers
             _inMemoryTodoItemProvider = inMemoryTodoItemProvider;
         }
 
-        // GET: ToDoItemController
+        // GET: ToDoItem
         public ActionResult Index()
         {
             return View(_inMemoryTodoItemProvider.GetAll());
         }
 
-        // GET: ToDoItemController/Details/5
+        // GET: ToDoItem/Details/5
         public ActionResult Details(int id)
         {
-            return View(_inMemoryTodoItemProvider.Get(id));
+            try
+            {
+                return View(_inMemoryTodoItemProvider.Get(id));
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return RedirectToAction(nameof(Index));
+            }
         }
 
-        // GET: ToDoItemController/Create
+        // GET: ToDoItem/Create
         public ActionResult Create()
         {
             return View();
         }
 
-        // POST: ToDoItemController/Create
+        // POST: ToDoItem/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(TodoItem data)
@@ -46,19 +53,19 @@ namespace ToDoApp.Controllers
                 _inMemoryTodoItemProvider.Create(data);
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (ArgumentException ex)
             {
                 return View();
             }
         }
 
-        // GET: ToDoItemController/Edit/5
+        // GET: ToDoItem/Edit/5
         public ActionResult Edit(int id)
         {
             return View(_inMemoryTodoItemProvider.Get(id));
         }
 
-        // POST: ToDoItemController/Edit/5
+        // POST: ToDoItem/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, TodoItem data)
@@ -68,29 +75,29 @@ namespace ToDoApp.Controllers
                 _inMemoryTodoItemProvider.Update(data, id);
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (KeyNotFoundException ex)
             {
                 return View(_inMemoryTodoItemProvider.Get(id));
             }
         }
 
-        // GET: ToDoItemController/Delete/5
+        // GET: ToDoItem/Delete/5
         public ActionResult Delete(int id)
         {
             return View(_inMemoryTodoItemProvider.Get(id));
         }
 
-        // POST: ToDoItemController/Delete/5
+        // POST: ToDoItem/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, TodoItem data)
         {
             try
             {
-                _inMemoryTodoItemProvider.Delete(data,id);
+                _inMemoryTodoItemProvider.Delete(data, id);
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch(KeyNotFoundException ex)
             {
                 return View(_inMemoryTodoItemProvider.Get(id));
             }

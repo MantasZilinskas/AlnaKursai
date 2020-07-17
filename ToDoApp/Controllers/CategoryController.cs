@@ -4,83 +4,103 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using ToDoApp.Interfaces;
+using ToDoApp.Models;
 
 namespace ToDoApp.Controllers
 {
     public class CategoryController : Controller
     {
-        // GET: CategoryController
+
+        private readonly IInMemoryCategoryProvider _inMemoryCategoryProvider;
+
+        public CategoryController(IInMemoryCategoryProvider inMemoryCategoryProvider)
+        {
+            _inMemoryCategoryProvider = inMemoryCategoryProvider;
+        }
+
+        // GET: Category
         public ActionResult Index()
         {
-            return View();
+            return View(_inMemoryCategoryProvider.GetAll());
         }
 
-        // GET: CategoryController/Details/5
+        // GET: Category/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            try
+            {
+                return View(_inMemoryCategoryProvider.Get(id));
+            }
+            catch(KeyNotFoundException ex)
+            {
+                return RedirectToAction(nameof(Index));
+            }
         }
 
-        // GET: CategoryController/Create
+        // GET: Category/Create
         public ActionResult Create()
         {
             return View();
         }
 
-        // POST: CategoryController/Create
+        // POST: Category/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create(Category data)
         {
             try
             {
+                _inMemoryCategoryProvider.Create(data);
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch(ArgumentException ex)
             {
                 return View();
             }
         }
 
-        // GET: CategoryController/Edit/5
+        // GET: Category/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            return View(_inMemoryCategoryProvider.Get(id));
         }
 
-        // POST: CategoryController/Edit/5
+        // POST: Category/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(int id, Category data)
         {
             try
             {
+                _inMemoryCategoryProvider.Update(data, id);
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch(KeyNotFoundException ex)
             {
-                return View();
+                return View(_inMemoryCategoryProvider.Get(id));
             }
         }
 
-        // GET: CategoryController/Delete/5
+        // GET: Category/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            return View(_inMemoryCategoryProvider.Get(id));
         }
 
-        // POST: CategoryController/Delete/5
+        // POST: Category/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Delete(int id, Category data)
         {
             try
             {
+                _inMemoryCategoryProvider.Delete(data, id);
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch(KeyNotFoundException ex)
             {
-                return View();
+                return View(_inMemoryCategoryProvider.Get(id));
             }
         }
     }

@@ -21,7 +21,8 @@ namespace ToDoApp.Models
         public override bool Equals(object obj)
         {
             return obj is TodoItem item &&
-                   Name == item.Name;
+                   (Name == item.Name ||
+                   Id  == item.Id);
         }
 
         public override int GetHashCode()
