@@ -28,6 +28,7 @@ namespace ToDoApp
             services.AddControllersWithViews();
             services.AddSingleton<IInMemoryTodoItemProvider, InMemoryTodoItemProvider>();
             services.AddSingleton<IInMemoryCategoryProvider, InMemoryCategoryProvider>();
+            services.AddSingleton<IInFileCategoryProvider, InFileCategoryProvider>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

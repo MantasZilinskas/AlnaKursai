@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ToDoApp.Interfaces;
 using ToDoApp.Models;
@@ -13,16 +10,18 @@ namespace ToDoApp.Controllers
     {
 
         private readonly IInMemoryCategoryProvider _inMemoryCategoryProvider;
+        private readonly IInFileCategoryProvider _inFileCategoryProvider;
 
-        public CategoryController(IInMemoryCategoryProvider inMemoryCategoryProvider)
+        public CategoryController(IInMemoryCategoryProvider inMemoryCategoryProvider, IInFileCategoryProvider inFileCategoryProvider)
         {
             _inMemoryCategoryProvider = inMemoryCategoryProvider;
+            _inFileCategoryProvider = inFileCategoryProvider;
         }
 
         // GET: Category
         public ActionResult Index()
         {
-            return View(_inMemoryCategoryProvider.GetAll());
+            return View(_inFileCategoryProvider.GetAll());
         }
 
         // GET: Category/Details/5
@@ -30,7 +29,7 @@ namespace ToDoApp.Controllers
         {
             try
             {
-                return View(_inMemoryCategoryProvider.Get(id));
+                return View(_inFileCategoryProvider.Get(id));
             }
             catch(KeyNotFoundException ex)
             {
@@ -51,7 +50,7 @@ namespace ToDoApp.Controllers
         {
             try
             {
-                _inMemoryCategoryProvider.Create(data);
+                _inFileCategoryProvider.Create(data);
                 return RedirectToAction(nameof(Index));
             }
             catch(ArgumentException ex)
@@ -63,7 +62,7 @@ namespace ToDoApp.Controllers
         // GET: Category/Edit/5
         public ActionResult Edit(int id)
         {
-            return View(_inMemoryCategoryProvider.Get(id));
+            return View(_inFileCategoryProvider.Get(id));
         }
 
         // POST: Category/Edit/5
@@ -73,19 +72,19 @@ namespace ToDoApp.Controllers
         {
             try
             {
-                _inMemoryCategoryProvider.Update(data, id);
+                _inFileCategoryProvider.Update(data, id);
                 return RedirectToAction(nameof(Index));
             }
             catch(KeyNotFoundException ex)
             {
-                return View(_inMemoryCategoryProvider.Get(id));
+                return View(_inFileCategoryProvider.Get(id));
             }
         }
 
         // GET: Category/Delete/5
         public ActionResult Delete(int id)
         {
-            return View(_inMemoryCategoryProvider.Get(id));
+            return View(_inFileCategoryProvider.Get(id));
         }
 
         // POST: Category/Delete/5
@@ -95,12 +94,12 @@ namespace ToDoApp.Controllers
         {
             try
             {
-                _inMemoryCategoryProvider.Delete(data, id);
+                _inFileCategoryProvider.Delete(data, id);
                 return RedirectToAction(nameof(Index));
             }
             catch(KeyNotFoundException ex)
             {
-                return View(_inMemoryCategoryProvider.Get(id));
+                return View(_inFileCategoryProvider.Get(id));
             }
         }
     }
