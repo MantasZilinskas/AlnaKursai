@@ -6,13 +6,14 @@ using ToDoApp.Models;
 
 namespace ToDoApp.Services
 {
-    public class InMemoryCategoryProvider : IInMemoryCategoryProvider
+    public class InMemoryCategoryProvider : IDataProvider<Category>
     {
         private static List<Category> values = new List<Category>();
 
         public void Create(Category data)
         {
-            Category category = values.FirstOrDefault(value => value.Equals(data));
+            data.Id = values.Count();
+            Category category = values.FirstOrDefault(value => value.Name == data.Name);
             if (category == null)
             {
                 values.Add(data);
@@ -23,9 +24,9 @@ namespace ToDoApp.Services
             }
         }
 
-        public void Delete(Category data, int Id)
+        public void Delete(int id)
         {
-            Category category = values.FirstOrDefault(value => value.Id == Id);
+            Category category = values.FirstOrDefault(value => value.Id == id);
             if (category != null)
             {
                 values.Remove(category);
@@ -36,9 +37,9 @@ namespace ToDoApp.Services
             }
         }
 
-        public Category Get(int Id)
+        public Category Get(int id)
         {
-            Category category = values.FirstOrDefault(value => value.Id == Id);
+            Category category = values.FirstOrDefault(value => value.Id == id);
             if (category != null)
             {
                 return category;
@@ -54,9 +55,9 @@ namespace ToDoApp.Services
             return values;
         }
 
-        public void Update(Category data, int Id)
+        public void Update(Category data)
         {
-            Category category = values.FirstOrDefault(value => value.Id == Id);
+            Category category = values.FirstOrDefault(value => value.Id == data.Id);
             if (category != null)
             {
                 category.Name = data.Name;

@@ -11,10 +11,10 @@ using Microsoft.AspNetCore.Razor.Language.Extensions;
 
 namespace ToDoApp.Services
 {
-    public class InFileCategoryProvider : IInFileCategoryProvider
+    public class InFileCategoryProvider : IDataProvider<Category>, IFileReaderWriter<Category>
     {
-        private const string file = @"Categories.json";
-        public  List<Category> ReadCategoriesFromJsonData(string file)
+        private const string file = nameof(Category) + ".json";
+        public List<Category> ReadFromFile(string file)
         {
             List<Category> result = new List<Category>();
             if (File.Exists(file))
@@ -30,7 +30,7 @@ namespace ToDoApp.Services
             }
             return result;
         }
-        public  void WriteCategoriesToJsonData(string file, List<Category> list)
+        public void WriteToFile(string file, List<Category> list)
         {
             using (StreamWriter w = new StreamWriter(file, false))
             {
@@ -40,14 +40,14 @@ namespace ToDoApp.Services
         }
         public ICollection<Category> GetAll()
         {
-            List<Category> categories = ReadCategoriesFromJsonData(file);
+            List<Category> categories = ReadFromFile(file);
             return categories;
         }
-        public  Category Get(int id)
+        public Category Get(int id)
         {
-            List<Category> categories = ReadCategoriesFromJsonData(file);
+            List<Category> categories = ReadFromFile(file);
             Category category = categories.FirstOrDefault(c => c.Id == id);
-            if(category != null)
+            if (category != null)
             {
                 return category;
             }
@@ -55,44 +55,45 @@ namespace ToDoApp.Services
             {
                 throw new KeyNotFoundException();
             }
-            
+
         }
         public void Create(Category data)
         {
-            List<Category> categories = ReadCategoriesFromJsonData(file);
-            bool CategoryExists = categories.Any(item => item.Equals(data));
+            List<Category> categories = ReadFromFile(file);
+            data.Id = categories.Count();
+            bool CategoryExists = categories.Any(item => item.Name == data.Name);
             if (!CategoryExists)
             {
                 categories.Add(data);
-                WriteCategoriesToJsonData(file, categories);
+                WriteToFile(file, categories);
             }
             else
             {
                 throw new ArgumentException();
             }
         }
-        public  void Update(Category data, int id)
+        public void Update(Category data)
         {
-            List<Category> categories = ReadCategoriesFromJsonData(file);
-            Category categoryToBeUpdated = categories.FirstOrDefault(c => c.Id == id);
-            if(categoryToBeUpdated != null)
+            List<Category> categories = ReadFromFile(file);
+            Category categoryToBeUpdated = categories.FirstOrDefault(c => c.Id == data.Id);
+            if (categoryToBeUpdated != null)
             {
                 categoryToBeUpdated.Name = data.Name;
-                WriteCategoriesToJsonData(file, categories);
+                WriteToFile(file, categories);
             }
             else
             {
                 throw new KeyNotFoundException();
             }
         }
-        public  void Delete(Category data, int id)
+        public void Delete(int id)
         {
-            List<Category> categories = ReadCategoriesFromJsonData(file);
+            List<Category> categories = ReadFromFile(file);
             Category categoryToBeDeleted = categories.FirstOrDefault(c => c.Id == id);
-            if(categoryToBeDeleted != null)
+            if (categoryToBeDeleted != null)
             {
                 categories.Remove(categoryToBeDeleted);
-                WriteCategoriesToJsonData(file, categories);
+                WriteToFile(file, categories);
             }
             else
             {

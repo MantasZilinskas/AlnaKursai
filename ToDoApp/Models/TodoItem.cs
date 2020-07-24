@@ -17,17 +17,5 @@ namespace ToDoApp.Models
         {
             Priority = Priority.Default;
         }
-
-        public override bool Equals(object obj)
-        {
-            return obj is TodoItem item &&
-                   (Name == item.Name ||
-                   Id  == item.Id);
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(Id);
-        }
     }
 }

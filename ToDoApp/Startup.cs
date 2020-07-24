@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ToDoApp.Interfaces;
+using ToDoApp.Models;
 using ToDoApp.Services;
 
 namespace ToDoApp
@@ -26,9 +27,9 @@ namespace ToDoApp
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            services.AddSingleton<IInMemoryTodoItemProvider, InMemoryTodoItemProvider>();
-            services.AddSingleton<IInMemoryCategoryProvider, InMemoryCategoryProvider>();
-            services.AddSingleton<IInFileCategoryProvider, InFileCategoryProvider>();
+            services.AddSingleton<IDataProvider<TodoItem>, InMemoryTodoItemProvider>();
+            //services.AddSingleton<IDataProvider<Category>, InMemoryCategoryProvider>();
+            services.AddSingleton<IDataProvider<Category>, InFileCategoryProvider>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

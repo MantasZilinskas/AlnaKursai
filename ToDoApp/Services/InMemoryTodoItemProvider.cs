@@ -6,26 +6,27 @@ using ToDoApp.Models;
 
 namespace ToDoApp.Services
 {
-    public class InMemoryTodoItemProvider : IInMemoryTodoItemProvider
+    public class InMemoryTodoItemProvider : IDataProvider<TodoItem>
     {
         private static List<TodoItem> values = new List<TodoItem>();
 
         public void Create(TodoItem data)
         {
-            TodoItem item = values.FirstOrDefault(value => value.Equals(data));
+            data.Id = values.Count();
+            TodoItem item = values.FirstOrDefault(value => value.Name == data.Name);
             if(item == null)
             {
                 values.Add(data);
             }
             else
             {
-                throw new ArgumentException();
+                throw new ArgumentException("An item with the name "+ data.Name +" already exists");
             }
         }
 
-        public void Delete(TodoItem data, int Id)
+        public void Delete(int id)
         {
-            TodoItem item = values.FirstOrDefault(value => value.Id == Id);
+            TodoItem item = values.FirstOrDefault(value => value.Id == id);
             if(item != null)
             {
                 values.Remove(item);
@@ -36,9 +37,9 @@ namespace ToDoApp.Services
             }
         }
 
-        public TodoItem Get(int Id)
+        public TodoItem Get(int id)
         {
-            TodoItem item = values.FirstOrDefault(value => value.Id == Id);
+            TodoItem item = values.FirstOrDefault(value => value.Id == id);
             if (item != null)
             {
                 return item;
@@ -54,9 +55,9 @@ namespace ToDoApp.Services
             return values;
         }
 
-        public void Update(TodoItem data, int Id)
+        public void Update(TodoItem data)
         {
-            TodoItem item = values.FirstOrDefault(value => value.Id == Id);
+            TodoItem item = values.FirstOrDefault(value => value.Id == data.Id);
             if (item != null)
             {
                 item.Name = data.Name;

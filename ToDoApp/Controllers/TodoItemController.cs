@@ -8,17 +8,17 @@ namespace ToDoApp.Controllers
 {
     public class TodoItemController : Controller
     {
-        private readonly IInMemoryTodoItemProvider _inMemoryTodoItemProvider;
+        private readonly IDataProvider<TodoItem> _dataProvider;
 
-        public TodoItemController(IInMemoryTodoItemProvider inMemoryTodoItemProvider)
+        public TodoItemController(IDataProvider<TodoItem> dataProvider)
         {
-            _inMemoryTodoItemProvider = inMemoryTodoItemProvider;
+            _dataProvider = dataProvider;
         }
 
         // GET: ToDoItem
         public ActionResult Index()
         {
-            return View(_inMemoryTodoItemProvider.GetAll());
+            return View(_dataProvider.GetAll());
         }
 
         // GET: ToDoItem/Details/5
@@ -26,7 +26,7 @@ namespace ToDoApp.Controllers
         {
             try
             {
-                return View(_inMemoryTodoItemProvider.Get(id));
+                return View(_dataProvider.Get(id));
             }
             catch (KeyNotFoundException ex)
             {
@@ -47,19 +47,20 @@ namespace ToDoApp.Controllers
         {
             try
             {
-                _inMemoryTodoItemProvider.Create(data);
+                _dataProvider.Create(data);
                 return RedirectToAction(nameof(Index));
             }
             catch (ArgumentException ex)
             {
-                return View();
+                ModelState.AddModelError("Name", ex.Message);
+                return View(data);
             }
         }
 
         // GET: ToDoItem/Edit/5
         public ActionResult Edit(int id)
         {
-            return View(_inMemoryTodoItemProvider.Get(id));
+            return View(_dataProvider.Get(id));
         }
 
         // POST: ToDoItem/Edit/5
@@ -69,19 +70,19 @@ namespace ToDoApp.Controllers
         {
             try
             {
-                _inMemoryTodoItemProvider.Update(data, id);
+                _dataProvider.Update(data);
                 return RedirectToAction(nameof(Index));
             }
             catch (KeyNotFoundException ex)
             {
-                return View(_inMemoryTodoItemProvider.Get(id));
+                return View(data);
             }
         }
 
         // GET: ToDoItem/Delete/5
         public ActionResult Delete(int id)
         {
-            return View(_inMemoryTodoItemProvider.Get(id));
+            return View(_dataProvider.Get(id));
         }
 
         // POST: ToDoItem/Delete/5
@@ -91,12 +92,12 @@ namespace ToDoApp.Controllers
         {
             try
             {
-                _inMemoryTodoItemProvider.Delete(data, id);
+                _dataProvider.Delete(id);
                 return RedirectToAction(nameof(Index));
             }
             catch(KeyNotFoundException ex)
             {
-                return View(_inMemoryTodoItemProvider.Get(id));
+                return View(data);
             }
         }
     }
