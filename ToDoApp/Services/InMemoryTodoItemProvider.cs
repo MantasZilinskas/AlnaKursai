@@ -63,6 +63,9 @@ namespace ToDoApp.Services
                 item.Name = data.Name;
                 item.Description = data.Description;
                 item.Priority = data.Priority;
+                item.CategoryId = data.CategoryId;
+                item.Status = data.Status;
+                item.DeadLineDate = data.DeadLineDate;
             }
             else
             {

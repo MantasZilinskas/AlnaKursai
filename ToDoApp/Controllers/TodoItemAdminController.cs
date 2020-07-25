@@ -1,29 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Net.Security;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using ToDoApp.Data;
 using ToDoApp.Interfaces;
+using ToDoApp.Migrations;
 using ToDoApp.Models;
 
 namespace ToDoApp.Controllers
 {
-    public class CategoryController : Controller
+    public class TodoItemAdminController : Controller
     {
+        private readonly IAsyncDataProvider<TodoItem> _todoItemDataProvider;
+        private readonly IAsyncDataProvider<Category> _categoryDataProvider;
 
-        private readonly IAsyncDataProvider<Category> _dataProvider;
-
-        public CategoryController(IAsyncDataProvider<Category> dataProvider)
+        public TodoItemAdminController(IAsyncDataProvider<TodoItem> todoItemDataProvider, IAsyncDataProvider<Category> categoryDataProvider)
         {
-            _dataProvider = dataProvider;
+            _todoItemDataProvider = todoItemDataProvider;
+            _categoryDataProvider = categoryDataProvider;
         }
 
-        // GET: Category
+
+        // GET: TodoItemAdmin
         public async Task<IActionResult> Index()
         {
-            return View(await _dataProvider.GetAll());
+            var items = await _todoItemDataProvider.GetAll();
+            return View(items);
         }
 
-        // GET: Category/Details/5
+        // GET: TodoItemAdmin/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -32,8 +41,8 @@ namespace ToDoApp.Controllers
             }
             try
             {
-                var Category = await _dataProvider.Get(id);
-                return View(Category);
+                var todoItem = await _todoItemDataProvider.Get(id);
+                return View(todoItem);
             }
             catch (KeyNotFoundException)
             {
@@ -41,36 +50,42 @@ namespace ToDoApp.Controllers
             }
         }
 
-        // GET: Category/Create
-        public IActionResult Create()
+        // GET: TodoItemAdmin/Create
+        public async Task<IActionResult> Create()
         {
+            ViewData["Categories"] = await _categoryDataProvider.GetAll();
             return View();
         }
 
-        // POST: Category/Create
+        // POST: TodoItemAdmin/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name")] Category Category)
+        public async Task<IActionResult> Create(TodoItem todoItem)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    await _dataProvider.Create(Category);
+                    await _todoItemDataProvider.Create(todoItem);
                     return RedirectToAction(nameof(Index));
                 }
                 catch (ArgumentException)
                 {
-                    return View(Category);
+                    ViewData["Categories"] = await _categoryDataProvider.GetAll();
+                    return View(todoItem);
                 }
 
             }
-            return View(Category);
+            else
+            {
+                ViewData["Categories"] = await _categoryDataProvider.GetAll();
+                return View(todoItem);
+            }
         }
 
-        // GET: Category/Edit/5
+        // GET: TodoItemAdmin/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -79,8 +94,9 @@ namespace ToDoApp.Controllers
             }
             try
             {
-                var Category = await _dataProvider.Get(id);
-                return View(Category);
+                TodoItem todoItem = await _todoItemDataProvider.Get(id);
+                ViewData["Categories"] = await _categoryDataProvider.GetAll();
+                return View(todoItem);
             }
             catch (KeyNotFoundException)
             {
@@ -89,19 +105,19 @@ namespace ToDoApp.Controllers
 
         }
 
-        // POST: Category/Edit/5
+        // POST: TodoItemAdmin/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Name")] Category Category)
+        public async Task<IActionResult> Edit(int id, TodoItem todoItem)
         {
-            Category.Id = id;
+            todoItem.Id = id;
             if (ModelState.IsValid)
             {
                 try
                 {
-                    await _dataProvider.Update(Category);
+                    await _todoItemDataProvider.Update(todoItem);
                 }
                 catch (KeyNotFoundException)
                 {
@@ -109,10 +125,14 @@ namespace ToDoApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(Category);
+            else
+            {
+                ViewData["Categories"] = await _categoryDataProvider.GetAll();
+                return View(todoItem);
+            }
         }
 
-        // GET: Category/Delete/5
+        // GET: TodoItemAdmin/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -120,23 +140,23 @@ namespace ToDoApp.Controllers
                 return NotFound();
             }
 
-            var Category = await _dataProvider.Get(id);
-            if (Category == null)
+            var todoItem = await _todoItemDataProvider.Get(id);
+            if (todoItem == null)
             {
                 return NotFound();
             }
 
-            return View(Category);
+            return View(todoItem);
         }
 
-        // POST: Category/Delete/5
+        // POST: TodoItemAdmin/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             try
             {
-                await _dataProvider.Delete(id);
+                await _todoItemDataProvider.Delete(id);
                 return RedirectToAction(nameof(Index));
             }
             catch (KeyNotFoundException)
