@@ -30,9 +30,8 @@ namespace ToDoApp
         {
             services.AddControllersWithViews();
 
-            services.AddSingleton<IDataProvider<TodoItem>, InMemoryTodoItemProvider>();
-            //services.AddSingleton<IDataProvider<Category>, InMemoryCategoryProvider>();
-            services.AddSingleton<IDataProvider<Category>, InFileCategoryProvider>();
+            services.AddSingleton<IDataProvider<TodoItem>, InFileDataProvider<TodoItem>>();
+            services.AddSingleton<IDataProvider<Category>, InFileDataProvider<Category>>();
 
             services.AddScoped<IAsyncDataProvider<TodoItem>, TodoItemProvider>();
             services.AddScoped<IAsyncDataProvider<Category>, CategoryProvider>();

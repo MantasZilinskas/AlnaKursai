@@ -4,11 +4,12 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using ToDoApp.Interfaces;
 using ToDoApp.Models.Enums;
 
 namespace ToDoApp.Models
 {
-    public class TodoItem
+    public class TodoItem : IHasId
     {
         public int Id { get; set; }
         [Required]
