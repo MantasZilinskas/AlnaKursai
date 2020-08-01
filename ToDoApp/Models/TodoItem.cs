@@ -26,6 +26,8 @@ namespace ToDoApp.Models
         public int? CategoryId { get; set; }
         public Status Status { get; set; }
 
+        public IList<ItemTag> ItemTags { get; set; }
+
         public TodoItem()
         {
             Priority = 3;
