@@ -1,19 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using ToDoApp.Interfaces;
-using ToDoApp.Models;
 
 namespace ToDoApp.Services
 {
-    public class InMemoryTodoItemProvider : IInMemoryTodoItemProvider
+    public class InMemoryDataProvider<TDataClass> : IDataProvider<TDataClass> where TDataClass : IHasId
     {
-        private static List<TodoItem> values = new List<TodoItem>();
+        private static List<TDataClass> values = new List<TDataClass>();
 
-        public void Create(TodoItem data)
+        public void Create(TDataClass data)
         {
-            TodoItem item = values.FirstOrDefault(value => value.Equals(data));
-            if(item == null)
+            data.Id = values.Count();
+            TDataClass item = values.FirstOrDefault(value => value.Id == data.Id);
+            if (item == null)
             {
                 values.Add(data);
             }
@@ -23,10 +24,10 @@ namespace ToDoApp.Services
             }
         }
 
-        public void Delete(TodoItem data, int Id)
+        public void Delete(int id)
         {
-            TodoItem item = values.FirstOrDefault(value => value.Id == Id);
-            if(item != null)
+            TDataClass item = values.FirstOrDefault(value => value.Id == id);
+            if (item != null)
             {
                 values.Remove(item);
             }
@@ -36,9 +37,9 @@ namespace ToDoApp.Services
             }
         }
 
-        public TodoItem Get(int Id)
+        public TDataClass Get(int id)
         {
-            TodoItem item = values.FirstOrDefault(value => value.Id == Id);
+            TDataClass item = values.FirstOrDefault(value => value.Id == id);
             if (item != null)
             {
                 return item;
@@ -49,19 +50,18 @@ namespace ToDoApp.Services
             }
         }
 
-        public ICollection<TodoItem> GetAll()
+        public ICollection<TDataClass> GetAll()
         {
             return values;
         }
 
-        public void Update(TodoItem data, int Id)
+        public void Update(TDataClass data)
         {
-            TodoItem item = values.FirstOrDefault(value => value.Id == Id);
+            TDataClass item = values.FirstOrDefault(value => value.Id == data.Id);
             if (item != null)
             {
-                item.Name = data.Name;
-                item.Description = data.Description;
-                item.Priority = data.Priority;
+                values.Remove(item);
+                values.Add(data);
             }
             else
             {

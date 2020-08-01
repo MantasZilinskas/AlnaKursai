@@ -5,12 +5,11 @@ using System.Threading.Tasks;
 
 namespace ToDoApp.Models.Enums
 {
-    public enum Priority
+    public enum Status
     {
-        VeryLow = 1,
-        Low = 2,
-        Default = 3,
-        Medium = 4,
-        High = 5,
+        Backlog,
+        Wip,
+        Done,
+        Archived
     }
 }

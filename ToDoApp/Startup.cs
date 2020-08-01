@@ -9,7 +9,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ToDoApp.Interfaces;
+using ToDoApp.Models;
 using ToDoApp.Services;
+using Microsoft.EntityFrameworkCore;
+using ToDoApp.Data;
 
 namespace ToDoApp
 {
@@ -26,9 +29,15 @@ namespace ToDoApp
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            services.AddSingleton<IInMemoryTodoItemProvider, InMemoryTodoItemProvider>();
-            services.AddSingleton<IInMemoryCategoryProvider, InMemoryCategoryProvider>();
-            services.AddSingleton<IInFileCategoryProvider, InFileCategoryProvider>();
+
+            services.AddSingleton<IDataProvider<TodoItem>, InFileDataProvider<TodoItem>>();
+            services.AddSingleton<IDataProvider<Category>, InFileDataProvider<Category>>();
+
+            services.AddScoped<IAsyncDataProvider<TodoItem>, TodoItemProvider>();
+            services.AddScoped<IAsyncDataProvider<Category>, CategoryProvider>();
+
+            services.AddDbContext<ToDoAppContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("ToDoAppContext")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -55,7 +64,7 @@ namespace ToDoApp
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=TodoItem}/{action=Index}/{id?}");
+                    pattern: "{controller=TodoItemAdmin}/{action=Index}/{id?}");
             });
         }
     }
