@@ -27,7 +27,7 @@ namespace ToDoApp.Services
             }
             else
             {
-                throw new ArgumentException("An item with the name " + data.Name + " already exists");
+                throw new ArgumentException("A category with the name " + data.Name + " already exists");
             }
         }
 
