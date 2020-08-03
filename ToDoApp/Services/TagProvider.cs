@@ -17,13 +17,14 @@ namespace ToDoApp.Services
         {
             _context = context;
         }
-        public async Task Create(Tag data)
+        public async Task<int> Create(Tag data)
         {
             Tag tag = await _context.Tags.FirstOrDefaultAsync(value => value.Name == data.Name);
             if (tag == null)
             {
-                _context.Tags.Add(data);
+                Tag addedTag = _context.Tags.Add(data).Entity;
                 await _context.SaveChangesAsync();
+                return addedTag.Id;
             }
             else
             {
@@ -60,7 +61,7 @@ namespace ToDoApp.Services
 
         public async Task<ICollection<Tag>> GetAll()
         {
-            return await _context.Tags.ToListAsync();
+            return await _context.Tags.Include(tag => tag.ItemTags).ToListAsync();
         }
 
         public async Task Update(Tag data)

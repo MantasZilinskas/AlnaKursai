@@ -32,8 +32,7 @@ namespace ToDoApp.Controllers
             }
             try
             {
-                var Category = await _dataProvider.Get(id);
-                return View(Category);
+                return View(await _dataProvider.Get(id));
             }
             catch (KeyNotFoundException)
             {
@@ -52,22 +51,22 @@ namespace ToDoApp.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name")] Category Category)
+        public async Task<IActionResult> Create([Bind("Name")] Category category)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    await _dataProvider.Create(Category);
+                    await _dataProvider.Create(category);
                     return RedirectToAction(nameof(Index));
                 }
                 catch (ArgumentException)
                 {
-                    return View(Category);
+                    return View(category);
                 }
 
             }
-            return View(Category);
+            return View(category);
         }
 
         // GET: Category/Edit/5
@@ -94,14 +93,14 @@ namespace ToDoApp.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Name")] Category Category)
+        public async Task<IActionResult> Edit(int id, [Bind("Name")] Category category)
         {
-            Category.Id = id;
+            category.Id = id;
             if (ModelState.IsValid)
             {
                 try
                 {
-                    await _dataProvider.Update(Category);
+                    await _dataProvider.Update(category);
                 }
                 catch (KeyNotFoundException)
                 {
@@ -109,7 +108,7 @@ namespace ToDoApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(Category);
+            return View(category);
         }
 
         // GET: Category/Delete/5

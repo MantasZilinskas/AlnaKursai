@@ -55,22 +55,22 @@ namespace ToDoApp.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name")] Tag Tag)
+        public async Task<IActionResult> Create([Bind("Name")] Tag tag)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    await _dataProvider.Create(Tag);
+                    await _dataProvider.Create(tag);
                     return RedirectToAction(nameof(Index));
                 }
                 catch (ArgumentException)
                 {
-                    return View(Tag);
+                    return View(tag);
                 }
 
             }
-            return View(Tag);
+            return View(tag);
         }
 
         // GET: Tag/Edit/5
@@ -97,14 +97,14 @@ namespace ToDoApp.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Name")] Tag Tag)
+        public async Task<IActionResult> Edit(int id, [Bind("Name")] Tag tag)
         {
-            Tag.Id = id;
+            tag.Id = id;
             if (ModelState.IsValid)
             {
                 try
                 {
-                    await _dataProvider.Update(Tag);
+                    await _dataProvider.Update(tag);
                 }
                 catch (KeyNotFoundException)
                 {
@@ -112,7 +112,7 @@ namespace ToDoApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(Tag);
+            return View(tag);
         }
 
         // GET: Tag/Delete/5

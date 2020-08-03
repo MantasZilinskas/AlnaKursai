@@ -24,7 +24,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="DeadLineDate" class="control-label"></label>
-                <input asp-for="DeadLineDate" class="form-control" type="date"/>
+                <input asp-for="DeadLineDate" class="form-control" type="date" />
                 <span asp-validation-for="DeadLineDate" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -38,6 +38,16 @@
                     <option value="@null">Uncategorized</option>
                 </select>
                 <span asp-validation-for="CategoryId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="@nameof(Tag)" class="control-label">@nameof(Tag)</label>
+                @foreach (var tag in (IEnumerable<Tag>)ViewData["Tags"])
+                {
+                    <div class="form-check">
+                        <input name="tagId" type="checkbox" class="form-check-input" value="@tag.Id" />
+                        <label class="form-check-label" for="@tag.Name">@tag.Name</label>
+                    </div>
+                }
             </div>
             <div class="form-group">
                 <label asp-for="Status" class="control-label"></label>

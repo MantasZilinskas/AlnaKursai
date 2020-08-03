@@ -36,6 +36,7 @@ namespace ToDoApp
             services.AddScoped<IAsyncDataProvider<TodoItem>, TodoItemProvider>();
             services.AddScoped<IAsyncDataProvider<Category>, CategoryProvider>();
             services.AddScoped<IAsyncDataProvider<Tag>, TagProvider>();
+            services.AddScoped<IItemTagProvider, ItemTagProvider>();
 
             services.AddDbContext<ToDoAppContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("ToDoAppContext")));
