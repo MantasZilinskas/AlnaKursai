@@ -17,17 +17,18 @@ namespace ToDoApp.Services
         {
             _context = context;
         }
-        public async Task Create(Category data)
+        public async Task<int> Create(Category data)
         {
             Category item = await _context.Categories.FirstOrDefaultAsync(value => value.Name == data.Name);
             if (item == null)
             {
-                _context.Categories.Add(data);
+                Category addedCategory = _context.Categories.Add(data).Entity;
                 await _context.SaveChangesAsync();
+                return addedCategory.Id;
             }
             else
             {
-                throw new ArgumentException("An item with the name " + data.Name + " already exists");
+                throw new ArgumentException("A category with the name " + data.Name + " already exists");
             }
         }
 

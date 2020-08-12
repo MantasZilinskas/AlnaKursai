@@ -17,11 +17,19 @@ namespace ToDoApp.Controllers
     {
         private readonly IAsyncDataProvider<TodoItem> _todoItemDataProvider;
         private readonly IAsyncDataProvider<Category> _categoryDataProvider;
+        private readonly IAsyncDataProvider<Tag> _tagDataProvider;
+        private readonly IItemTagProvider _itemTagProvider;
 
-        public TodoItemAdminController(IAsyncDataProvider<TodoItem> todoItemDataProvider, IAsyncDataProvider<Category> categoryDataProvider)
+        public TodoItemAdminController(
+            IAsyncDataProvider<TodoItem> todoItemDataProvider,
+            IAsyncDataProvider<Category> categoryDataProvider,
+            IAsyncDataProvider<Tag> tagDataProvider,
+            IItemTagProvider itemTagProvider)
         {
             _todoItemDataProvider = todoItemDataProvider;
             _categoryDataProvider = categoryDataProvider;
+            _tagDataProvider = tagDataProvider;
+            _itemTagProvider = itemTagProvider;
         }
 
 
@@ -54,6 +62,7 @@ namespace ToDoApp.Controllers
         public async Task<IActionResult> Create()
         {
             ViewData["Categories"] = await _categoryDataProvider.GetAll();
+            ViewData["Tags"] = await _tagDataProvider.GetAll();
             return View();
         }
 
@@ -62,18 +71,21 @@ namespace ToDoApp.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(TodoItem todoItem)
+        public async Task<IActionResult> Create(TodoItem todoItem, List<int> tagId)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    await _todoItemDataProvider.Create(todoItem);
+                    int todoItemId = await _todoItemDataProvider.Create(todoItem);
+                    await _itemTagProvider.Create(todoItemId, tagId);
                     return RedirectToAction(nameof(Index));
                 }
-                catch (ArgumentException)
+                catch (ArgumentException ex)
                 {
                     ViewData["Categories"] = await _categoryDataProvider.GetAll();
+                    ViewData["Tags"] = await _tagDataProvider.GetAll();
+                    ModelState.AddModelError("Name", ex.Message);
                     return View(todoItem);
                 }
 
@@ -81,6 +93,7 @@ namespace ToDoApp.Controllers
             else
             {
                 ViewData["Categories"] = await _categoryDataProvider.GetAll();
+                ViewData["Tags"] = await _tagDataProvider.GetAll();
                 return View(todoItem);
             }
         }
@@ -96,6 +109,7 @@ namespace ToDoApp.Controllers
             {
                 TodoItem todoItem = await _todoItemDataProvider.Get(id);
                 ViewData["Categories"] = await _categoryDataProvider.GetAll();
+                ViewData["Tags"] = await _tagDataProvider.GetAll();
                 return View(todoItem);
             }
             catch (KeyNotFoundException)
@@ -110,7 +124,7 @@ namespace ToDoApp.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, TodoItem todoItem)
+        public async Task<IActionResult> Edit(int id, TodoItem todoItem, List<int> tagId)
         {
             todoItem.Id = id;
             if (ModelState.IsValid)
@@ -118,6 +132,7 @@ namespace ToDoApp.Controllers
                 try
                 {
                     await _todoItemDataProvider.Update(todoItem);
+                    await _itemTagProvider.Update(id, tagId);
                 }
                 catch (KeyNotFoundException)
                 {
@@ -128,6 +143,7 @@ namespace ToDoApp.Controllers
             else
             {
                 ViewData["Categories"] = await _categoryDataProvider.GetAll();
+                ViewData["Tags"] = await _tagDataProvider.GetAll();
                 return View(todoItem);
             }
         }
@@ -157,6 +173,7 @@ namespace ToDoApp.Controllers
             try
             {
                 await _todoItemDataProvider.Delete(id);
+                await _itemTagProvider.Delete(id);
                 return RedirectToAction(nameof(Index));
             }
             catch (KeyNotFoundException)

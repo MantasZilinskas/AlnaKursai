@@ -17,13 +17,14 @@ namespace ToDoApp.Services
         {
             _context = context;
         }
-        public async Task Create(TodoItem data)
+        public async Task<int> Create(TodoItem data)
         {
             TodoItem item = await _context.TodoItems.FirstOrDefaultAsync(value => value.Name == data.Name);
             if (item == null)
             {
-                _context.TodoItems.Add(data);
+                TodoItem addedItem = _context.TodoItems.Add(data).Entity;
                 await _context.SaveChangesAsync();
+                return addedItem.Id;
             }
             else
             {
@@ -47,7 +48,7 @@ namespace ToDoApp.Services
 
         public async Task<TodoItem> Get(int? id)
         {
-            TodoItem item = await _context.TodoItems.FirstOrDefaultAsync(value => value.Id == id);
+            TodoItem item = await _context.TodoItems.Include(item => item.ItemTags).ThenInclude(item => item.Tag).FirstOrDefaultAsync(value => value.Id == id);
             if (item != null)
             {
                 return item;

@@ -28,7 +28,7 @@ namespace ToDoApp.Controllers
             {
                 return View(_dataProvider.Get(id));
             }
-            catch (KeyNotFoundException ex)
+            catch (KeyNotFoundException)
             {
                 return RedirectToAction(nameof(Index));
             }
@@ -73,7 +73,7 @@ namespace ToDoApp.Controllers
                 _dataProvider.Update(data);
                 return RedirectToAction(nameof(Index));
             }
-            catch (KeyNotFoundException ex)
+            catch (KeyNotFoundException)
             {
                 return View(data);
             }
@@ -95,7 +95,7 @@ namespace ToDoApp.Controllers
                 _dataProvider.Delete(id);
                 return RedirectToAction(nameof(Index));
             }
-            catch(KeyNotFoundException ex)
+            catch(KeyNotFoundException)
             {
                 return View(data);
             }

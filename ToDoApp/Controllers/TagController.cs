@@ -1,29 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using ToDoApp.Data;
 using ToDoApp.Interfaces;
 using ToDoApp.Models;
 
 namespace ToDoApp.Controllers
 {
-    public class CategoryController : Controller
+    public class TagController : Controller
     {
+        private readonly IAsyncDataProvider<Tag> _dataProvider;
 
-        private readonly IAsyncDataProvider<Category> _dataProvider;
-
-        public CategoryController(IAsyncDataProvider<Category> dataProvider)
+        public TagController(IAsyncDataProvider<Tag> dataProvider)
         {
             _dataProvider = dataProvider;
         }
 
-        // GET: Category
+        // GET: Tag
         public async Task<IActionResult> Index()
         {
             return View(await _dataProvider.GetAll());
         }
 
-        // GET: Category/Details/5
+        // GET: tag/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -32,7 +35,8 @@ namespace ToDoApp.Controllers
             }
             try
             {
-                return View(await _dataProvider.Get(id));
+                var Tag = await _dataProvider.Get(id);
+                return View(Tag);
             }
             catch (KeyNotFoundException)
             {
@@ -40,36 +44,36 @@ namespace ToDoApp.Controllers
             }
         }
 
-        // GET: Category/Create
+        // GET: Tag/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Category/Create
+        // POST: Tag/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name")] Category category)
+        public async Task<IActionResult> Create([Bind("Name")] Tag tag)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    await _dataProvider.Create(category);
+                    await _dataProvider.Create(tag);
                     return RedirectToAction(nameof(Index));
                 }
                 catch (ArgumentException)
                 {
-                    return View(category);
+                    return View(tag);
                 }
 
             }
-            return View(category);
+            return View(tag);
         }
 
-        // GET: Category/Edit/5
+        // GET: Tag/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -78,8 +82,8 @@ namespace ToDoApp.Controllers
             }
             try
             {
-                var Category = await _dataProvider.Get(id);
-                return View(Category);
+                var Tag = await _dataProvider.Get(id);
+                return View(Tag);
             }
             catch (KeyNotFoundException)
             {
@@ -88,19 +92,19 @@ namespace ToDoApp.Controllers
 
         }
 
-        // POST: Category/Edit/5
+        // POST: Tag/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Name")] Category category)
+        public async Task<IActionResult> Edit(int id, [Bind("Name")] Tag tag)
         {
-            category.Id = id;
+            tag.Id = id;
             if (ModelState.IsValid)
             {
                 try
                 {
-                    await _dataProvider.Update(category);
+                    await _dataProvider.Update(tag);
                 }
                 catch (KeyNotFoundException)
                 {
@@ -108,10 +112,10 @@ namespace ToDoApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(category);
+            return View(tag);
         }
 
-        // GET: Category/Delete/5
+        // GET: Tag/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -119,16 +123,16 @@ namespace ToDoApp.Controllers
                 return NotFound();
             }
 
-            var Category = await _dataProvider.Get(id);
-            if (Category == null)
+            var Tag = await _dataProvider.Get(id);
+            if (Tag == null)
             {
                 return NotFound();
             }
 
-            return View(Category);
+            return View(Tag);
         }
 
-        // POST: Category/Delete/5
+        // POST: Tag/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
