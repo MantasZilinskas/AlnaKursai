@@ -1,18 +1,15 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using ToDoApp.Interfaces;
-using ToDoApp.Models;
-using ToDoApp.Services;
 using Microsoft.EntityFrameworkCore;
-using ToDoApp.Data;
+using TodoApp.Buisiness.Interfaces;
+using TodoApp.Data.Models;
+using TodoApp.Data.Services;
+using TodoApp.Data.Interfaces;
+using TodoApp.Buisiness.Services;
+using TodoApp.Data.Context;
 
 namespace ToDoApp
 {
@@ -30,13 +27,20 @@ namespace ToDoApp
         {
             services.AddControllersWithViews();
 
-            services.AddSingleton<IDataProvider<TodoItem>, InFileDataProvider<TodoItem>>();
-            services.AddSingleton<IDataProvider<Category>, InFileDataProvider<Category>>();
+            //services.AddSingleton<IDataService<TodoItemDAO>, InMemoryDataService<TodoItemDAO>>();
+            //services.AddSingleton<IDataService<CategoryDAO>, InMemoryDataService<CategoryDAO>>();
 
-            services.AddScoped<IAsyncDataProvider<TodoItem>, TodoItemProvider>();
-            services.AddScoped<IAsyncDataProvider<Category>, CategoryProvider>();
-            services.AddScoped<IAsyncDataProvider<Tag>, TagProvider>();
+            //services.AddScoped<IAsyncDataService<TodoItemDAO>, TodoItemService>();
+            //services.AddScoped<IAsyncDataService<CategoryDAO>, CategoryService>();
+            //services.AddScoped<IAsyncDataService<TagDAO>, TagService>();
+            services.AddScoped<IItemTagService, ItemTagService>();
+
+            services.AddScoped<IAsyncDataProvider<TodoItemDAO>, TodoItemProvider>();
+            services.AddScoped<IAsyncDataProvider<CategoryDAO>, CategoryProvider>();
+            services.AddScoped<IAsyncDataProvider<TagDAO>, TagProvider>();
             services.AddScoped<IItemTagProvider, ItemTagProvider>();
+
+
 
             services.AddDbContext<ToDoAppContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("ToDoAppContext")));

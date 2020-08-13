@@ -1,0 +1,71 @@
+﻿@model TodoApp.Web.ViewModels.TodoItemViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>TodoItemViewModel</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DeadLineDate" class="control-label"></label>
+                <input asp-for="DeadLineDate" class="form-control" type="date" />
+                <span asp-validation-for="DeadLineDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Priority" class="control-label"></label>
+                <input asp-for="Priority" class="form-control" min="1" max="5" />
+                <span asp-validation-for="Priority" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Category" class="control-label"></label>
+                <select asp-for="CategoryId" asp-items="@(new SelectList((IEnumerable<CategoryViewModel>)@ViewData["Categories"],"Id","Name"))" class="form-control">
+                    <option value="@null">Uncategorized</option>
+                </select>
+                <span asp-validation-for="CategoryId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="Tag" class="control-label">Tag</label>
+                @foreach (var tag in (IEnumerable<TagViewModel>)ViewData["Tags"])
+                {
+                    <div class="form-check">
+                        <input name="tagId" type="checkbox" class="form-check-input" value="@tag.Id" checked="@Model.ItemTags.Any(item => item.TagId == tag.Id)" />
+                        <label class="form-check-label" for="@tag.Name">@tag.Name</label>
+                    </div>
+                }
+            </div>
+            <div class="form-group">
+                <label asp-for="Status" class="control-label"></label>
+                <select asp-for="Status" class="form-control" asp-items="@Html.GetEnumSelectList<TodoApp.Web.ViewModels.Enums.Status>()"></select>
+                <span asp-validation-for="Status" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

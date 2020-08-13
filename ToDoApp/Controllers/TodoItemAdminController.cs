@@ -1,42 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net.Security;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using ToDoApp.Data;
-using ToDoApp.Interfaces;
-using ToDoApp.Migrations;
-using ToDoApp.Models;
+using TodoApp.Buisiness.Interfaces;
+using TodoApp.Data.Models;
 
 namespace ToDoApp.Controllers
 {
     public class TodoItemAdminController : Controller
     {
-        private readonly IAsyncDataProvider<TodoItem> _todoItemDataProvider;
-        private readonly IAsyncDataProvider<Category> _categoryDataProvider;
-        private readonly IAsyncDataProvider<Tag> _tagDataProvider;
-        private readonly IItemTagProvider _itemTagProvider;
+        private readonly IAsyncDataService<TodoItemDAO> _todoItemdataService;
+        private readonly IAsyncDataService<CategoryDAO> _categorydataService;
+        private readonly IAsyncDataService<TagDAO> _tagdataService;
+        private readonly IItemTagService _itemTagService;
 
         public TodoItemAdminController(
-            IAsyncDataProvider<TodoItem> todoItemDataProvider,
-            IAsyncDataProvider<Category> categoryDataProvider,
-            IAsyncDataProvider<Tag> tagDataProvider,
-            IItemTagProvider itemTagProvider)
+            IAsyncDataService<TodoItemDAO> todoItemdataService,
+            IAsyncDataService<CategoryDAO> categorydataService,
+            IAsyncDataService<TagDAO> tagdataService,
+            IItemTagService itemTagService)
         {
-            _todoItemDataProvider = todoItemDataProvider;
-            _categoryDataProvider = categoryDataProvider;
-            _tagDataProvider = tagDataProvider;
-            _itemTagProvider = itemTagProvider;
+            _todoItemdataService = todoItemdataService;
+            _categorydataService = categorydataService;
+            _tagdataService = tagdataService;
+            _itemTagService = itemTagService;
         }
 
 
         // GET: TodoItemAdmin
         public async Task<IActionResult> Index()
         {
-            var items = await _todoItemDataProvider.GetAll();
+            var items = await _todoItemdataService.GetAll();
             return View(items);
         }
 
@@ -49,7 +43,7 @@ namespace ToDoApp.Controllers
             }
             try
             {
-                var todoItem = await _todoItemDataProvider.Get(id);
+                var todoItem = await _todoItemdataService.Get(id);
                 return View(todoItem);
             }
             catch (KeyNotFoundException)
@@ -61,8 +55,8 @@ namespace ToDoApp.Controllers
         // GET: TodoItemAdmin/Create
         public async Task<IActionResult> Create()
         {
-            ViewData["Categories"] = await _categoryDataProvider.GetAll();
-            ViewData["Tags"] = await _tagDataProvider.GetAll();
+            ViewData["Categories"] = await _categorydataService.GetAll();
+            ViewData["Tags"] = await _tagdataService.GetAll();
             return View();
         }
 
@@ -71,20 +65,20 @@ namespace ToDoApp.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(TodoItem todoItem, List<int> tagId)
+        public async Task<IActionResult> Create(TodoItemDAO todoItem, List<int> tagId)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    int todoItemId = await _todoItemDataProvider.Create(todoItem);
-                    await _itemTagProvider.Create(todoItemId, tagId);
+                    int todoItemId = await _todoItemdataService.Create(todoItem);
+                    await _itemTagService.Create(todoItemId, tagId);
                     return RedirectToAction(nameof(Index));
                 }
                 catch (ArgumentException ex)
                 {
-                    ViewData["Categories"] = await _categoryDataProvider.GetAll();
-                    ViewData["Tags"] = await _tagDataProvider.GetAll();
+                    ViewData["Categories"] = await _categorydataService.GetAll();
+                    ViewData["Tags"] = await _tagdataService.GetAll();
                     ModelState.AddModelError("Name", ex.Message);
                     return View(todoItem);
                 }
@@ -92,8 +86,8 @@ namespace ToDoApp.Controllers
             }
             else
             {
-                ViewData["Categories"] = await _categoryDataProvider.GetAll();
-                ViewData["Tags"] = await _tagDataProvider.GetAll();
+                ViewData["Categories"] = await _categorydataService.GetAll();
+                ViewData["Tags"] = await _tagdataService.GetAll();
                 return View(todoItem);
             }
         }
@@ -107,9 +101,9 @@ namespace ToDoApp.Controllers
             }
             try
             {
-                TodoItem todoItem = await _todoItemDataProvider.Get(id);
-                ViewData["Categories"] = await _categoryDataProvider.GetAll();
-                ViewData["Tags"] = await _tagDataProvider.GetAll();
+                TodoItemDAO todoItem = await _todoItemdataService.Get(id);
+                ViewData["Categories"] = await _categorydataService.GetAll();
+                ViewData["Tags"] = await _tagdataService.GetAll();
                 return View(todoItem);
             }
             catch (KeyNotFoundException)
@@ -124,15 +118,15 @@ namespace ToDoApp.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, TodoItem todoItem, List<int> tagId)
+        public async Task<IActionResult> Edit(int id, TodoItemDAO todoItem, List<int> tagId)
         {
             todoItem.Id = id;
             if (ModelState.IsValid)
             {
                 try
                 {
-                    await _todoItemDataProvider.Update(todoItem);
-                    await _itemTagProvider.Update(id, tagId);
+                    await _todoItemdataService.Update(todoItem);
+                    await _itemTagService.Update(id, tagId);
                 }
                 catch (KeyNotFoundException)
                 {
@@ -142,8 +136,8 @@ namespace ToDoApp.Controllers
             }
             else
             {
-                ViewData["Categories"] = await _categoryDataProvider.GetAll();
-                ViewData["Tags"] = await _tagDataProvider.GetAll();
+                ViewData["Categories"] = await _categorydataService.GetAll();
+                ViewData["Tags"] = await _tagdataService.GetAll();
                 return View(todoItem);
             }
         }
@@ -156,7 +150,7 @@ namespace ToDoApp.Controllers
                 return NotFound();
             }
 
-            var todoItem = await _todoItemDataProvider.Get(id);
+            var todoItem = await _todoItemdataService.Get(id);
             if (todoItem == null)
             {
                 return NotFound();
@@ -172,8 +166,8 @@ namespace ToDoApp.Controllers
         {
             try
             {
-                await _todoItemDataProvider.Delete(id);
-                await _itemTagProvider.Delete(id);
+                await _todoItemdataService.Delete(id);
+                await _itemTagService.Delete(id);
                 return RedirectToAction(nameof(Index));
             }
             catch (KeyNotFoundException)

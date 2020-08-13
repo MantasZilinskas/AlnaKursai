@@ -3,27 +3,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using ToDoApp.Data;
-using ToDoApp.Interfaces;
-using ToDoApp.Models;
+using TodoApp.Buisiness.Interfaces;
+using TodoApp.Data.Models;
 
 namespace ToDoApp.Controllers
 {
     public class TagController : Controller
     {
-        private readonly IAsyncDataProvider<Tag> _dataProvider;
+        private readonly IAsyncDataService<TagDAO> _dataService;
 
-        public TagController(IAsyncDataProvider<Tag> dataProvider)
+        public TagController(IAsyncDataService<TagDAO> dataService)
         {
-            _dataProvider = dataProvider;
+            _dataService = dataService;
         }
 
         // GET: Tag
         public async Task<IActionResult> Index()
         {
-            return View(await _dataProvider.GetAll());
+            return View(await _dataService.GetAll());
         }
 
         // GET: tag/Details/5
@@ -35,7 +32,7 @@ namespace ToDoApp.Controllers
             }
             try
             {
-                var Tag = await _dataProvider.Get(id);
+                var Tag = await _dataService.Get(id);
                 return View(Tag);
             }
             catch (KeyNotFoundException)
@@ -55,13 +52,13 @@ namespace ToDoApp.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name")] Tag tag)
+        public async Task<IActionResult> Create([Bind("Name")] TagDAO tag)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    await _dataProvider.Create(tag);
+                    await _dataService.Create(tag);
                     return RedirectToAction(nameof(Index));
                 }
                 catch (ArgumentException)
@@ -82,7 +79,7 @@ namespace ToDoApp.Controllers
             }
             try
             {
-                var Tag = await _dataProvider.Get(id);
+                var Tag = await _dataService.Get(id);
                 return View(Tag);
             }
             catch (KeyNotFoundException)
@@ -97,14 +94,14 @@ namespace ToDoApp.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Name")] Tag tag)
+        public async Task<IActionResult> Edit(int id, [Bind("Name")] TagDAO tag)
         {
             tag.Id = id;
             if (ModelState.IsValid)
             {
                 try
                 {
-                    await _dataProvider.Update(tag);
+                    await _dataService.Update(tag);
                 }
                 catch (KeyNotFoundException)
                 {
@@ -123,7 +120,7 @@ namespace ToDoApp.Controllers
                 return NotFound();
             }
 
-            var Tag = await _dataProvider.Get(id);
+            var Tag = await _dataService.Get(id);
             if (Tag == null)
             {
                 return NotFound();
@@ -139,7 +136,7 @@ namespace ToDoApp.Controllers
         {
             try
             {
-                await _dataProvider.Delete(id);
+                await _dataService.Delete(id);
                 return RedirectToAction(nameof(Index));
             }
             catch (KeyNotFoundException)

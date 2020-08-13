@@ -1,24 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
-using ToDoApp.Interfaces;
-using ToDoApp.Models;
+using TodoApp.Buisiness.Interfaces;
+using TodoApp.Data.Models;
 
 namespace ToDoApp.Controllers
 {
     public class TodoItemController : Controller
     {
-        private readonly IDataProvider<TodoItem> _dataProvider;
+        private readonly IDataService<TodoItemDAO> _dataService;
 
-        public TodoItemController(IDataProvider<TodoItem> dataProvider)
+        public TodoItemController(IDataService<TodoItemDAO> dataService)
         {
-            _dataProvider = dataProvider;
+            _dataService = dataService;
         }
 
         // GET: ToDoItem
         public ActionResult Index()
         {
-            return View(_dataProvider.GetAll());
+            return View(_dataService.GetAll());
         }
 
         // GET: ToDoItem/Details/5
@@ -26,7 +26,7 @@ namespace ToDoApp.Controllers
         {
             try
             {
-                return View(_dataProvider.Get(id));
+                return View(_dataService.Get(id));
             }
             catch (KeyNotFoundException)
             {
@@ -43,11 +43,11 @@ namespace ToDoApp.Controllers
         // POST: ToDoItem/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(TodoItem data)
+        public ActionResult Create(TodoItemDAO data)
         {
             try
             {
-                _dataProvider.Create(data);
+                _dataService.Create(data);
                 return RedirectToAction(nameof(Index));
             }
             catch (ArgumentException ex)
@@ -60,17 +60,17 @@ namespace ToDoApp.Controllers
         // GET: ToDoItem/Edit/5
         public ActionResult Edit(int id)
         {
-            return View(_dataProvider.Get(id));
+            return View(_dataService.Get(id));
         }
 
         // POST: ToDoItem/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, TodoItem data)
+        public ActionResult Edit(int id, TodoItemDAO data)
         {
             try
             {
-                _dataProvider.Update(data);
+                _dataService.Update(data);
                 return RedirectToAction(nameof(Index));
             }
             catch (KeyNotFoundException)
@@ -82,17 +82,17 @@ namespace ToDoApp.Controllers
         // GET: ToDoItem/Delete/5
         public ActionResult Delete(int id)
         {
-            return View(_dataProvider.Get(id));
+            return View(_dataService.Get(id));
         }
 
         // POST: ToDoItem/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, TodoItem data)
+        public ActionResult Delete(int id, TodoItemDAO data)
         {
             try
             {
-                _dataProvider.Delete(id);
+                _dataService.Delete(id);
                 return RedirectToAction(nameof(Index));
             }
             catch(KeyNotFoundException)

@@ -2,25 +2,25 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using ToDoApp.Interfaces;
-using ToDoApp.Models;
+using TodoApp.Buisiness.Interfaces;
+using TodoApp.Data.Models;
 
 namespace ToDoApp.Controllers
 {
     public class CategoryController : Controller
     {
 
-        private readonly IAsyncDataProvider<Category> _dataProvider;
+        private readonly IAsyncDataService<CategoryDAO> _dataService;
 
-        public CategoryController(IAsyncDataProvider<Category> dataProvider)
+        public CategoryController(IAsyncDataService<CategoryDAO> dataService)
         {
-            _dataProvider = dataProvider;
+            _dataService = dataService;
         }
 
         // GET: Category
         public async Task<IActionResult> Index()
         {
-            return View(await _dataProvider.GetAll());
+            return View(await _dataService.GetAll());
         }
 
         // GET: Category/Details/5
@@ -32,7 +32,7 @@ namespace ToDoApp.Controllers
             }
             try
             {
-                return View(await _dataProvider.Get(id));
+                return View(await _dataService.Get(id));
             }
             catch (KeyNotFoundException)
             {
@@ -51,13 +51,13 @@ namespace ToDoApp.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name")] Category category)
+        public async Task<IActionResult> Create([Bind("Name")] CategoryDAO category)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    await _dataProvider.Create(category);
+                    await _dataService.Create(category);
                     return RedirectToAction(nameof(Index));
                 }
                 catch (ArgumentException)
@@ -78,7 +78,7 @@ namespace ToDoApp.Controllers
             }
             try
             {
-                var Category = await _dataProvider.Get(id);
+                var Category = await _dataService.Get(id);
                 return View(Category);
             }
             catch (KeyNotFoundException)
@@ -93,14 +93,14 @@ namespace ToDoApp.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Name")] Category category)
+        public async Task<IActionResult> Edit(int id, [Bind("Name")] CategoryDAO category)
         {
             category.Id = id;
             if (ModelState.IsValid)
             {
                 try
                 {
-                    await _dataProvider.Update(category);
+                    await _dataService.Update(category);
                 }
                 catch (KeyNotFoundException)
                 {
@@ -119,7 +119,7 @@ namespace ToDoApp.Controllers
                 return NotFound();
             }
 
-            var Category = await _dataProvider.Get(id);
+            var Category = await _dataService.Get(id);
             if (Category == null)
             {
                 return NotFound();
@@ -135,7 +135,7 @@ namespace ToDoApp.Controllers
         {
             try
             {
-                await _dataProvider.Delete(id);
+                await _dataService.Delete(id);
                 return RedirectToAction(nameof(Index));
             }
             catch (KeyNotFoundException)
