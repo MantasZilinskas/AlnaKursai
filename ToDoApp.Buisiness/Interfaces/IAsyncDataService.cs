@@ -7,10 +7,10 @@ namespace TodoApp.Buisiness.Interfaces
 {
     public interface IAsyncDataService<TDataClass>
     {
-        public Task<int> Create(TDataClass Buisiness);
-        public Task<ICollection<TDataClass>> GetAll();
+        public Task<int> Create(TDataClass data);
+        public Task<IEnumerable<TDataClass>> GetAll();
         public Task<TDataClass> Get(int? id);
-        public Task Update(TDataClass Buisiness);
+        public Task Update(TDataClass data);
         public Task Delete(int id);
     }
 }

@@ -59,7 +59,7 @@ namespace TodoApp.Data.Services
             }
         }
 
-        public async Task<ICollection<CategoryDAO>> GetAll()
+        public async Task<IEnumerable<CategoryDAO>> GetAll()
         {
             return await _context.Categories.ToListAsync();
         }

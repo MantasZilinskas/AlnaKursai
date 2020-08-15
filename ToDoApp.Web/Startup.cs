@@ -1,9 +1,12 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
+using System.Linq;
 using TodoApp.Buisiness.Interfaces;
 using TodoApp.Buisiness.Models;
 using TodoApp.Buisiness.Services;
@@ -27,9 +30,10 @@ namespace TodoApp.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-            services.AddSingleton<IDataService<TodoItemVO>, InMemoryDataService<TodoItemVO>>();
-            services.AddSingleton<IDataService<CategoryVO>, InMemoryDataService<CategoryVO>>();
+            services.AddSingleton(typeof(IDataService<>), typeof(InMemoryDataService<>));
+            services.AddSingleton(typeof(IDataProvider<>), typeof(InMemoryDataProvider<>));
 
             services.AddScoped<IAsyncDataService<TodoItemVO>, TodoItemService>();
             services.AddScoped<IAsyncDataService<CategoryVO>, CategoryService>();

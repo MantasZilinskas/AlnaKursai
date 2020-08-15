@@ -1,11 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using AutoMapper;
+using TodoApp.Buisiness.Models;
+using TodoApp.Web.ViewModels;
 
 namespace TodoApp.Web.Mapping
 {
-    public class ItemTagViewModelProfile
+    public class ItemTagViewModelProfile : Profile
     {
+        public ItemTagViewModelProfile()
+        {
+            CreateMap<ItemTagVO,ItemTagViewModel>()
+                .ReverseMap();
+        }
     }
 }

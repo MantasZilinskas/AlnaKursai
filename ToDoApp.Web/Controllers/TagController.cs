@@ -1,26 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using TodoApp.Buisiness.Interfaces;
+using TodoApp.Buisiness.Models;
 using TodoApp.Web.ViewModels;
 
 namespace TodoApp.Web.Controllers
 {
     public class TagController : Controller
     {
-        private readonly IAsyncDataService<TagViewModel> _dataService;
-
-        public TagController(IAsyncDataService<TagViewModel> dataService)
+        private readonly IAsyncDataService<TagVO> _dataService;
+        private readonly IMapper _mapper;
+        public TagController(IAsyncDataService<TagVO> dataService, IMapper mapper)
         {
             _dataService = dataService;
+            _mapper = mapper;
         }
-
         // GET: Tag
         public async Task<IActionResult> Index()
         {
-            return View(await _dataService.GetAll());
+            return View(_mapper.Map<IEnumerable<TagViewModel>>(await _dataService.GetAll()));
         }
 
         // GET: tag/Details/5
@@ -32,8 +33,7 @@ namespace TodoApp.Web.Controllers
             }
             try
             {
-                var Tag = await _dataService.Get(id);
-                return View(Tag);
+                return View(_mapper.Map<TagViewModel>(await _dataService.Get(id)));
             }
             catch (KeyNotFoundException)
             {
@@ -58,7 +58,7 @@ namespace TodoApp.Web.Controllers
             {
                 try
                 {
-                    await _dataService.Create(tag);
+                    await _dataService.Create(_mapper.Map<TagVO>(tag));
                     return RedirectToAction(nameof(Index));
                 }
                 catch (ArgumentException)
@@ -79,8 +79,7 @@ namespace TodoApp.Web.Controllers
             }
             try
             {
-                var Tag = await _dataService.Get(id);
-                return View(Tag);
+                return View(_mapper.Map<TagViewModel>(await _dataService.Get(id)));
             }
             catch (KeyNotFoundException)
             {
@@ -101,7 +100,7 @@ namespace TodoApp.Web.Controllers
             {
                 try
                 {
-                    await _dataService.Update(tag);
+                    await _dataService.Update(_mapper.Map<TagVO>(tag));
                 }
                 catch (KeyNotFoundException)
                 {
@@ -120,13 +119,13 @@ namespace TodoApp.Web.Controllers
                 return NotFound();
             }
 
-            var Tag = await _dataService.Get(id);
-            if (Tag == null)
+            var tag = await _dataService.Get(id);
+            if (tag == null)
             {
                 return NotFound();
             }
 
-            return View(Tag);
+            return View(_mapper.Map<TagViewModel>(tag));
         }
 
         // POST: Tag/Delete/5

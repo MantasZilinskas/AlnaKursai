@@ -9,7 +9,7 @@ using TodoApp.Buisiness.Models.Enums;
 
 namespace TodoApp.Buisiness.Models
 {
-    public class TodoItemVO : IHasId
+    public class TodoItemVO : Data.Interfaces.IHasId
     {
         public int Id { get; set; }
         [Required]

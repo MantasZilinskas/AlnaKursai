@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using TodoApp.Buisiness.Models;
+using TodoApp.Data.Models;
 using TodoApp.Web.ViewModels;
 
 namespace TodoApp.Web.Mapping
@@ -8,7 +9,7 @@ namespace TodoApp.Web.Mapping
     {
         public TodoItemViewModelProfile()
         {
-            CreateMap<TodoItemVO,TodoItemViewModel>()
+            CreateMap<TodoItemVO, TodoItemViewModel>()
                 .ReverseMap();
         }
     }

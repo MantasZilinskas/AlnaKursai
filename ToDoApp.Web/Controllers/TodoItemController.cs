@@ -1,24 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using TodoApp.Buisiness.Interfaces;
+using TodoApp.Buisiness.Models;
 using TodoApp.Web.ViewModels;
 
 namespace TodoApp.Web.Controllers
 {
     public class TodoItemController : Controller
     {
-        private readonly IDataService<TodoItemViewModel> _dataService;
+        private readonly IDataService<TodoItemVO> _dataService;
+        private readonly IMapper _mapper;
 
-        public TodoItemController(IDataService<TodoItemViewModel> dataService)
+        public TodoItemController(IDataService<TodoItemVO> dataService, IMapper mapper)
         {
             _dataService = dataService;
+            _mapper = mapper;
         }
-
         // GET: ToDoItem
         public ActionResult Index()
         {
-            return View(_dataService.GetAll());
+            return View(_mapper.Map<IEnumerable<TodoItemViewModel>>(_dataService.GetAll()));
         }
 
         // GET: ToDoItem/Details/5
@@ -26,7 +29,7 @@ namespace TodoApp.Web.Controllers
         {
             try
             {
-                return View(_dataService.Get(id));
+                return View(_mapper.Map<TodoItemViewModel>(_dataService.Get(id)));
             }
             catch (KeyNotFoundException)
             {
@@ -47,7 +50,7 @@ namespace TodoApp.Web.Controllers
         {
             try
             {
-                _dataService.Create(data);
+                _dataService.Create(_mapper.Map<TodoItemVO>(data));
                 return RedirectToAction(nameof(Index));
             }
             catch (ArgumentException ex)
@@ -60,7 +63,7 @@ namespace TodoApp.Web.Controllers
         // GET: ToDoItem/Edit/5
         public ActionResult Edit(int id)
         {
-            return View(_dataService.Get(id));
+            return View(_mapper.Map<TodoItemViewModel>(_dataService.Get(id)));
         }
 
         // POST: ToDoItem/Edit/5
@@ -70,7 +73,7 @@ namespace TodoApp.Web.Controllers
         {
             try
             {
-                _dataService.Update(data);
+                _dataService.Update(_mapper.Map<TodoItemVO>(data));
                 return RedirectToAction(nameof(Index));
             }
             catch (KeyNotFoundException)
@@ -82,7 +85,7 @@ namespace TodoApp.Web.Controllers
         // GET: ToDoItem/Delete/5
         public ActionResult Delete(int id)
         {
-            return View(_dataService.Get(id));
+            return View(_mapper.Map<TodoItemViewModel>(_dataService.Get(id)));
         }
 
         // POST: ToDoItem/Delete/5
@@ -95,7 +98,7 @@ namespace TodoApp.Web.Controllers
                 _dataService.Delete(id);
                 return RedirectToAction(nameof(Index));
             }
-            catch(KeyNotFoundException)
+            catch (KeyNotFoundException)
             {
                 return View(data);
             }

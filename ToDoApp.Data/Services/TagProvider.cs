@@ -59,7 +59,7 @@ namespace TodoApp.Data.Services
             }
         }
 
-        public async Task<ICollection<TagDAO>> GetAll()
+        public async Task<IEnumerable<TagDAO>> GetAll()
         {
             return await _context.Tags.Include(tag => tag.ItemTags).ToListAsync();
         }

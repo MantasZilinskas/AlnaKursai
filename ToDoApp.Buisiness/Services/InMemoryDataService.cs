@@ -4,7 +4,7 @@ using TodoApp.Data.Interfaces;
 
 namespace TodoApp.Buisiness.Services
 {
-    public class InMemoryDataService<TDataClass> : IDataService<TDataClass> where TDataClass : TodoApp.Buisiness.Interfaces.IHasId
+    public class InMemoryDataService<TDataClass> : IDataService<TDataClass> where TDataClass : Data.Interfaces.IHasId
     {
         private readonly IDataProvider<TDataClass> _dataProvider;
 

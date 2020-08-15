@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using TodoApp.Buisiness.Interfaces;
+using TodoApp.Buisiness.Models;
 using TodoApp.Web.ViewModels;
 
 namespace TodoApp.Web.Controllers
@@ -10,17 +12,18 @@ namespace TodoApp.Web.Controllers
     public class CategoryController : Controller
     {
 
-        private readonly IAsyncDataService<CategoryViewModel> _dataService;
-
-        public CategoryController(IAsyncDataService<CategoryViewModel> dataService)
+        private readonly IAsyncDataService<CategoryVO> _dataService;
+        private readonly IMapper _mapper;
+        public CategoryController(IAsyncDataService<CategoryVO> dataService, IMapper mapper)
         {
+            _mapper = mapper;
             _dataService = dataService;
         }
 
         // GET: Category
         public async Task<IActionResult> Index()
         {
-            return View(await _dataService.GetAll());
+            return View(_mapper.Map<IEnumerable<CategoryViewModel>>(await _dataService.GetAll()));
         }
 
         // GET: Category/Details/5
@@ -32,7 +35,7 @@ namespace TodoApp.Web.Controllers
             }
             try
             {
-                return View(await _dataService.Get(id));
+                return View(_mapper.Map<CategoryViewModel>(await _dataService.Get(id)));
             }
             catch (KeyNotFoundException)
             {
@@ -57,7 +60,7 @@ namespace TodoApp.Web.Controllers
             {
                 try
                 {
-                    await _dataService.Create(category);
+                    await _dataService.Create(_mapper.Map<CategoryVO>(category));
                     return RedirectToAction(nameof(Index));
                 }
                 catch (ArgumentException)
@@ -78,8 +81,7 @@ namespace TodoApp.Web.Controllers
             }
             try
             {
-                var Category = await _dataService.Get(id);
-                return View(Category);
+                return View(_mapper.Map<CategoryViewModel>(await _dataService.Get(id)));
             }
             catch (KeyNotFoundException)
             {
@@ -100,7 +102,7 @@ namespace TodoApp.Web.Controllers
             {
                 try
                 {
-                    await _dataService.Update(category);
+                    await _dataService.Update(_mapper.Map<CategoryVO>(category));
                 }
                 catch (KeyNotFoundException)
                 {
@@ -119,13 +121,13 @@ namespace TodoApp.Web.Controllers
                 return NotFound();
             }
 
-            var Category = await _dataService.Get(id);
-            if (Category == null)
+            var category = await _dataService.Get(id);
+            if (category == null)
             {
                 return NotFound();
             }
 
-            return View(Category);
+            return View(_mapper.Map<CategoryViewModel>(category));
         }
 
         // POST: Category/Delete/5

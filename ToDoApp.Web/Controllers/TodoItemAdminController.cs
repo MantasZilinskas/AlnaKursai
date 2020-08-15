@@ -1,37 +1,41 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using TodoApp.Buisiness.Interfaces;
+using TodoApp.Buisiness.Models;
 using TodoApp.Web.ViewModels;
 
 namespace TodoApp.Web.Controllers
 {
     public class TodoItemAdminController : Controller
     {
-        private readonly IAsyncDataService<TodoItemViewModel> _todoItemdataService;
-        private readonly IAsyncDataService<CategoryViewModel> _categorydataService;
-        private readonly IAsyncDataService<TagViewModel> _tagdataService;
+        private readonly IAsyncDataService<TodoItemVO> _todoItemdataService;
+        private readonly IAsyncDataService<CategoryVO> _categorydataService;
+        private readonly IAsyncDataService<TagVO> _tagdataService;
         private readonly IItemTagService _itemTagService;
+        private readonly IMapper _mapper;
 
         public TodoItemAdminController(
-            IAsyncDataService<TodoItemViewModel> todoItemdataService,
-            IAsyncDataService<CategoryViewModel> categorydataService,
-            IAsyncDataService<TagViewModel> tagdataService,
-            IItemTagService itemTagService)
+            IAsyncDataService<TodoItemVO> todoItemdataService,
+            IAsyncDataService<CategoryVO> categorydataService,
+            IAsyncDataService<TagVO> tagdataService,
+            IItemTagService itemTagService,
+            IMapper mapper)
         {
             _todoItemdataService = todoItemdataService;
             _categorydataService = categorydataService;
             _tagdataService = tagdataService;
             _itemTagService = itemTagService;
+            _mapper = mapper;
         }
 
 
         // GET: TodoItemAdmin
         public async Task<IActionResult> Index()
         {
-            var items = await _todoItemdataService.GetAll();
-            return View(items);
+            return View(_mapper.Map<IEnumerable<TodoItemViewModel>>(await _todoItemdataService.GetAll()));
         }
 
         // GET: TodoItemAdmin/Details/5
@@ -43,8 +47,7 @@ namespace TodoApp.Web.Controllers
             }
             try
             {
-                var todoItem = await _todoItemdataService.Get(id);
-                return View(todoItem);
+                return View(_mapper.Map<TodoItemViewModel>(await _todoItemdataService.Get(id)));
             }
             catch (KeyNotFoundException)
             {
@@ -55,8 +58,8 @@ namespace TodoApp.Web.Controllers
         // GET: TodoItemAdmin/Create
         public async Task<IActionResult> Create()
         {
-            ViewData["Categories"] = await _categorydataService.GetAll();
-            ViewData["Tags"] = await _tagdataService.GetAll();
+            ViewData["Categories"] = _mapper.Map<IEnumerable<CategoryViewModel>>(await _categorydataService.GetAll());
+            ViewData["Tags"] = _mapper.Map<IEnumerable<TagViewModel>>(await _tagdataService.GetAll());
             return View();
         }
 
@@ -71,14 +74,14 @@ namespace TodoApp.Web.Controllers
             {
                 try
                 {
-                    int todoItemId = await _todoItemdataService.Create(todoItem);
+                    int todoItemId = await _todoItemdataService.Create(_mapper.Map<TodoItemVO>(todoItem));
                     await _itemTagService.Create(todoItemId, tagId);
                     return RedirectToAction(nameof(Index));
                 }
                 catch (ArgumentException ex)
                 {
-                    ViewData["Categories"] = await _categorydataService.GetAll();
-                    ViewData["Tags"] = await _tagdataService.GetAll();
+                    ViewData["Categories"] = _mapper.Map<IEnumerable<CategoryViewModel>>(await _categorydataService.GetAll());
+                    ViewData["Tags"] = _mapper.Map<IEnumerable<TagViewModel>>(await _tagdataService.GetAll());
                     ModelState.AddModelError("Name", ex.Message);
                     return View(todoItem);
                 }
@@ -86,8 +89,8 @@ namespace TodoApp.Web.Controllers
             }
             else
             {
-                ViewData["Categories"] = await _categorydataService.GetAll();
-                ViewData["Tags"] = await _tagdataService.GetAll();
+                ViewData["Categories"] = _mapper.Map<IEnumerable<CategoryViewModel>>(await _categorydataService.GetAll());
+                ViewData["Tags"] = _mapper.Map<IEnumerable<TagViewModel>>(await _tagdataService.GetAll());
                 return View(todoItem);
             }
         }
@@ -101,10 +104,9 @@ namespace TodoApp.Web.Controllers
             }
             try
             {
-                TodoItemViewModel todoItem = await _todoItemdataService.Get(id);
-                ViewData["Categories"] = await _categorydataService.GetAll();
-                ViewData["Tags"] = await _tagdataService.GetAll();
-                return View(todoItem);
+                ViewData["Categories"] = _mapper.Map<IEnumerable<CategoryViewModel>>(await _categorydataService.GetAll());
+                ViewData["Tags"] = _mapper.Map<IEnumerable<TagViewModel>>(await _tagdataService.GetAll());
+                return View(_mapper.Map<TodoItemViewModel>(await _todoItemdataService.Get(id)));
             }
             catch (KeyNotFoundException)
             {
@@ -125,7 +127,7 @@ namespace TodoApp.Web.Controllers
             {
                 try
                 {
-                    await _todoItemdataService.Update(todoItem);
+                    await _todoItemdataService.Update(_mapper.Map<TodoItemVO>(todoItem));
                     await _itemTagService.Update(id, tagId);
                 }
                 catch (KeyNotFoundException)
@@ -136,8 +138,8 @@ namespace TodoApp.Web.Controllers
             }
             else
             {
-                ViewData["Categories"] = await _categorydataService.GetAll();
-                ViewData["Tags"] = await _tagdataService.GetAll();
+                ViewData["Categories"] = _mapper.Map<IEnumerable<CategoryViewModel>>(await _categorydataService.GetAll());
+                ViewData["Tags"] = _mapper.Map<IEnumerable<TagViewModel>>(await _tagdataService.GetAll());
                 return View(todoItem);
             }
         }
@@ -150,7 +152,7 @@ namespace TodoApp.Web.Controllers
                 return NotFound();
             }
 
-            var todoItem = await _todoItemdataService.Get(id);
+            var todoItem = _mapper.Map<TodoItemViewModel>(await _todoItemdataService.Get(id));
             if (todoItem == null)
             {
                 return NotFound();

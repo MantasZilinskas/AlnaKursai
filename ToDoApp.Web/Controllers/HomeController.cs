@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TodoApp.Web.ViewModels;
@@ -9,7 +10,7 @@ namespace TodoApp.Web.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IMapper mapper)
         {
             _logger = logger;
         }
