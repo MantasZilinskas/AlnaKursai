@@ -13,7 +13,7 @@ using TodoApp.Buisiness.Services;
 using TodoApp.Data.Context;
 using TodoApp.Data.Interfaces;
 using TodoApp.Data.Models;
-using TodoApp.Data.Services;
+using TodoApp.Data.Providers;
 
 namespace TodoApp.Web
 {
@@ -32,7 +32,7 @@ namespace TodoApp.Web
             services.AddControllersWithViews();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-            services.AddSingleton(typeof(IDataService<>), typeof(InMemoryDataService<>));
+            services.AddSingleton(typeof(IDataService<>), typeof(DataService<>));
             services.AddSingleton(typeof(IDataProvider<>), typeof(InMemoryDataProvider<>));
 
             services.AddScoped<IAsyncDataService<TodoItemVO>, TodoItemService>();

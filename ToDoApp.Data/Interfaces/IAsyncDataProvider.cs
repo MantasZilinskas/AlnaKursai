@@ -12,5 +12,7 @@ namespace TodoApp.Data.Interfaces
         public Task<TDataClass> Get(int? id);
         public Task Update(TDataClass data);
         public Task Delete(int id);
+        public Task<bool> IsDuplicate(TDataClass data);
+        public Task<bool> Exists(int? id);
     }
 }

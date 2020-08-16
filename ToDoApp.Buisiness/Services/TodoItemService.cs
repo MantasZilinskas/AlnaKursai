@@ -5,6 +5,7 @@ using TodoApp.Data.Interfaces;
 using TodoApp.Buisiness.Models;
 using AutoMapper;
 using TodoApp.Data.Models;
+using System;
 
 namespace TodoApp.Buisiness.Services
 {
@@ -21,18 +22,38 @@ namespace TodoApp.Buisiness.Services
 
         public async Task<int> Create(TodoItemVO todoItem)
         {
+            if (await _dataProvider.IsDuplicate(_mapper.Map<TodoItemDAO>(todoItem)))
+            {
+                throw new ArgumentException("An item with the name " + todoItem.Name + " already exists");
+            }
             int createdId = await _dataProvider.Create(_mapper.Map<TodoItemDAO>(todoItem));
             return createdId;
         }
 
         public async Task Delete(int id)
         {
-            await _dataProvider.Delete(id);
+            if (await _dataProvider.Exists(id))
+            {
+                await _dataProvider.Delete(id);
+            }
+            else
+            {
+                throw new KeyNotFoundException();
+            }
+            
         }
 
         public async Task<TodoItemVO> Get(int? id)
         {
-            return _mapper.Map<TodoItemVO>(await _dataProvider.Get(id));
+            if (await _dataProvider.Exists(id))
+            {
+                return _mapper.Map<TodoItemVO>(await _dataProvider.Get(id));
+            }
+            else
+            {
+                throw new KeyNotFoundException();
+            }
+            
         }
 
         public async Task<IEnumerable<TodoItemVO>> GetAll()
@@ -42,7 +63,14 @@ namespace TodoApp.Buisiness.Services
 
         public async Task Update(TodoItemVO todoItem)
         {
-            await _dataProvider.Update(_mapper.Map<TodoItemDAO>(todoItem));
+            if (await _dataProvider.Exists(todoItem.Id))
+            {
+                await _dataProvider.Update(_mapper.Map<TodoItemDAO>(todoItem));
+            }
+            else
+            {
+                throw new KeyNotFoundException();
+            }
         }
     }
 }

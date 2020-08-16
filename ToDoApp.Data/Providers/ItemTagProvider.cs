@@ -10,7 +10,7 @@ using TodoApp.Data.Context;
 using TodoApp.Data.Interfaces;
 using TodoApp.Data.Models;
 
-namespace TodoApp.Data.Services
+namespace TodoApp.Data.Providers
 {
     public class ItemTagProvider : IItemTagProvider
     {

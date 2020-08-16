@@ -9,5 +9,6 @@ namespace TodoApp.Data.Interfaces
         public TDataClass Get(int id);
         public void Update(TDataClass data);
         public void Delete(int id);
+        public bool Exists(int id);
     }
 }

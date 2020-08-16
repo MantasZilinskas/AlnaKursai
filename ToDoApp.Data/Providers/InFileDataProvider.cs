@@ -7,7 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TodoApp.Data.Interfaces;
 
-namespace TodoApp.Data.Services
+namespace TodoApp.Data.Providers
 {
     public class InFileDataProvider<TDataClass> : IFileReaderWriter<TDataClass>, IDataProvider<TDataClass> where TDataClass : IHasId
     {
@@ -44,60 +44,37 @@ namespace TodoApp.Data.Services
         public TDataClass Get(int id)
         {
             List<TDataClass> items = ReadFromFile(file);
-            TDataClass TDataClass = items.FirstOrDefault(c => c.Id == id);
-            if (TDataClass != null)
-            {
-                return TDataClass;
-            }
-            else
-            {
-                throw new KeyNotFoundException();
-            }
+            TDataClass item = items.FirstOrDefault(c => c.Id == id);
+            return item;
 
         }
         public void Create(TDataClass data)
         {
             List<TDataClass> items = ReadFromFile(file);
             data.Id = items.Count();
-            bool TDataClassExists = items.Any(item => item.Id == data.Id);
-            if (!TDataClassExists)
-            {
-                items.Add(data);
-                WriteToFile(file, items);
-            }
-            else
-            {
-                throw new ArgumentException();
-            }
+            items.Add(data);
+            WriteToFile(file, items);
         }
         public void Update(TDataClass data)
         {
             List<TDataClass> items = ReadFromFile(file);
             TDataClass item = items.FirstOrDefault(i => i.Id == data.Id);
-            if (item != null)
-            {
-                items.Remove(item);
-                items.Add(data);
-                WriteToFile(file, items);
-            }
-            else
-            {
-                throw new KeyNotFoundException();
-            }
+            items.Remove(item);
+            items.Add(data);
+            WriteToFile(file, items);
         }
         public void Delete(int id)
         {
             List<TDataClass> items = ReadFromFile(file);
             TDataClass item = items.FirstOrDefault(i => i.Id == id);
-            if (item != null)
-            {
-                items.Remove(item);
-                WriteToFile(file, items);
-            }
-            else
-            {
-                throw new KeyNotFoundException();
-            }
+            items.Remove(item);
+            WriteToFile(file, items);
+        }
+
+        public bool Exists(int id)
+        {
+            List<TDataClass> items = ReadFromFile(file);
+            return items.Any(value => value.Id == id);
         }
     }
 }

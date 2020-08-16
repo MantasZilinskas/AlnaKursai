@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Xml.Schema;
@@ -20,20 +21,38 @@ namespace TodoApp.Buisiness.Services
             _mapper = mapper;
         }
 
-        public async Task<int> Create(CategoryVO tag)
+        public async Task<int> Create(CategoryVO category)
         {
-            int createdId = await _dataProvider.Create(_mapper.Map<CategoryDAO>(tag));
+            if (await _dataProvider.IsDuplicate(_mapper.Map<CategoryDAO>(category)))
+            {
+                throw new ArgumentException("A category with the name " + category.Name + " already exists");
+            }
+            int createdId = await _dataProvider.Create(_mapper.Map<CategoryDAO>(category));
             return createdId;
         }
 
         public async Task Delete(int id)
         {
-            await _dataProvider.Delete(id);
+            if (await _dataProvider.Exists(id))
+            {
+                await _dataProvider.Delete(id);
+            }
+            else
+            {
+                throw new KeyNotFoundException();
+            }
         }
 
         public async Task<CategoryVO> Get(int? id)
         {
-            return _mapper.Map<CategoryVO>(await _dataProvider.Get(id));
+            if (await _dataProvider.Exists(id))
+            {
+                return _mapper.Map<CategoryVO>(await _dataProvider.Get(id));
+            }
+            else
+            {
+                throw new KeyNotFoundException();
+            }
         }
 
         public async Task<IEnumerable<CategoryVO>> GetAll()
@@ -43,7 +62,14 @@ namespace TodoApp.Buisiness.Services
 
         public async Task Update(CategoryVO tag)
         {
-            await _dataProvider.Update(_mapper.Map<CategoryDAO>(tag));
+            if (await _dataProvider.Exists(tag.Id))
+            {
+                await _dataProvider.Update(_mapper.Map<CategoryDAO>(tag));
+            }
+            else
+            {
+                throw new KeyNotFoundException();
+            }
         }
     }
 }
