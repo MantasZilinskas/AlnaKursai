@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Moq;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using TodoApp.Data.Context;
@@ -42,6 +43,16 @@ namespace TodoApp.Data.Tests.Providers
             var provider = new CategoryProvider(mockContext.Object);
             var categories = await provider.GetAll();
             Assert.Equal(3, categories.Count());
+        }
+        [Fact]
+        public async Task Create_Returns_createdIdAndAddsCategory()
+        {
+            var provider = new CategoryProvider(mockContext.Object);
+            var category = new CategoryDAO { Id = 22, Name = "TestCategory" };
+
+            var addedCategoyId = await provider.Create(category);
+
+            Assert.Equal(category.Id, addedCategoyId);
         }
     }
 }
