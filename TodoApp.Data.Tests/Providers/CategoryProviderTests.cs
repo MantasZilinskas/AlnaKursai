@@ -13,10 +13,11 @@ namespace TodoApp.Data.Tests.Providers
 {
     public class CategoryProviderTests
     {
-        [Fact]
-        public async Task Get_Returns_Category()
+        private readonly Mock<DbSet<CategoryDAO>> mockSet;
+        private readonly Mock<TodoAppContext> mockContext;
+        public CategoryProviderTests()
         {
-            var data = new List<CategoryDAO>
+            mockSet = new List<CategoryDAO>
             {
                 new CategoryDAO { Id = 1, Name = "BBB" },
                 new CategoryDAO { Id = 2, Name = "ZZZ" },
@@ -24,13 +25,23 @@ namespace TodoApp.Data.Tests.Providers
             }.AsQueryable()
             .BuildMockDbSet();
 
-            var mockContext = new Mock<TodoAppContext>();
-            mockContext.Setup(c => c.Categories).Returns(data.Object);
+            mockContext = new Mock<TodoAppContext>();
+            mockContext.Setup(c => c.Categories).Returns(mockSet.Object);
 
+        }
+        [Fact]
+        public async Task Get_Returns_Category()
+        { 
             var provider = new CategoryProvider(mockContext.Object);
             var category = await provider.Get(1);
-
             Assert.Equal("BBB", category.Name);
+        }
+        [Fact]
+        public async Task GetAll_Returns_CategoryList()
+        {
+            var provider = new CategoryProvider(mockContext.Object);
+            var categories = await provider.GetAll();
+            Assert.Equal(3, categories.Count());
         }
     }
 }
