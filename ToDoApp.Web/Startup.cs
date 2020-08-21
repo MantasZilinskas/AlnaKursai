@@ -47,7 +47,7 @@ namespace TodoApp.Web
 
 
 
-            services.AddDbContext<ToDoAppContext>(options =>
+            services.AddDbContext<TodoAppContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("ToDoAppContext")));
         }
 

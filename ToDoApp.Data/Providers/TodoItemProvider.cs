@@ -11,9 +11,9 @@ namespace TodoApp.Data.Providers
 {
     public class TodoItemProvider : IAsyncDataProvider<TodoItemDAO>
     {
-        private readonly ToDoAppContext _context;
+        private readonly TodoAppContext _context;
 
-        public TodoItemProvider(ToDoAppContext context)
+        public TodoItemProvider(TodoAppContext context)
         {
             _context = context;
         }

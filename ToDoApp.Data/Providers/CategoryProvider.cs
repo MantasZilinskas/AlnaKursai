@@ -11,9 +11,9 @@ namespace TodoApp.Data.Providers
 {
     public class CategoryProvider : IAsyncDataProvider<CategoryDAO>
     {
-        private readonly ToDoAppContext _context;
+        private readonly TodoAppContext _context;
 
-        public CategoryProvider(ToDoAppContext context)
+        public CategoryProvider(TodoAppContext context)
         {
             _context = context;
         }
