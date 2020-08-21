@@ -19,9 +19,9 @@ namespace TodoApp.Data.Providers
         }
         public async Task<int> Create(CategoryDAO data)
         {
-            CategoryDAO addedCategory = _context.Categories.Add(data).Entity;
+            _context.Categories.Add(data);
             await _context.SaveChangesAsync();
-            return addedCategory.Id;
+            return data.Id;
         }
 
         public async Task Delete(int id)
