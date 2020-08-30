@@ -56,5 +56,17 @@ namespace TodoApp.Data.Tests.Providers
             mockContext.Verify(context => context.SaveChangesAsync(new CancellationToken()), Times.Once);
             Assert.Equal(category.Id, addedCategoyId);
         }
+        [Fact]
+        public async Task Update_Updates_Category()
+        {
+            var provider = new CategoryProvider(mockContext.Object);
+            var category = new CategoryDAO { Id = 1, Name = "TestUpdateCategory" };
+
+            await provider.Update(category);
+            var updatedCategory = await provider.Get(category.Id);
+
+            Assert.Equal("TestUpdateCategory", updatedCategory.Name);
+        }
+
     }
 }
