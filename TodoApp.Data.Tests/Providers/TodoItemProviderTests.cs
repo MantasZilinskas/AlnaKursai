@@ -22,9 +22,9 @@ namespace TodoApp.Data.Tests.Providers
         {
             mockSet = new List<TodoItemDAO>
             {
-                new TodoItemDAO { Id = 1, Name = "BBB" },
-                new TodoItemDAO { Id = 2, Name = "ZZZ" },
-                new TodoItemDAO { Id = 3, Name = "AAA" },
+                new TodoItemDAO { Id = 1, Name = "TestItem1" },
+                new TodoItemDAO { Id = 2, Name = "TestItem2" },
+                new TodoItemDAO { Id = 3, Name = "TestItem3" },
             }.AsQueryable()
             .BuildMockDbSet();
 
@@ -36,8 +36,11 @@ namespace TodoApp.Data.Tests.Providers
         public async Task Get_Returns_TodoItem()
         {
             IAsyncDataProvider<TodoItemDAO> provider = new TodoItemProvider(mockContext.Object);
-            var TodoItem = await provider.Get(1);
-            Assert.Equal("BBB", TodoItem.Name);
+            int idItemToGet = 1;
+
+            var TodoItem = await provider.Get(idItemToGet);
+
+            Assert.Equal(idItemToGet, TodoItem.Id);
         }
         [Fact]
         public async Task GetAll_Returns_TodoItemList()
@@ -58,6 +61,17 @@ namespace TodoApp.Data.Tests.Providers
             mockContext.Verify(context => context.SaveChangesAsync(new CancellationToken()), Times.Once);
             Assert.Equal(item.Id, addedItemId);
         }
+
+        [Fact]
+        public async Task Create_ThrowsExeption_DuplicateName()
+        {
+            IAsyncDataProvider<TodoItemDAO> provider = new TodoItemProvider(mockContext.Object);
+            var item = new TodoItemDAO { Id = 22, Name = "TestItem1" };
+
+            await Assert.ThrowsAsync<ArgumentException>(() => provider.Create(item));
+
+        }
+
         [Fact]
         public async Task Update_Updates_TodoItem()
         {

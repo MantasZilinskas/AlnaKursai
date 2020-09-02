@@ -22,9 +22,9 @@ namespace TodoApp.Data.Tests.Providers
         {
             mockSet = new List<CategoryDAO>
             {
-                new CategoryDAO { Id = 1, Name = "BBB" },
-                new CategoryDAO { Id = 2, Name = "ZZZ" },
-                new CategoryDAO { Id = 3, Name = "AAA" },
+                new CategoryDAO { Id = 1, Name = "TestCategory1" },
+                new CategoryDAO { Id = 2, Name = "TestCategory2" },
+                new CategoryDAO { Id = 3, Name = "TestCategory3" },
             }.AsQueryable()
             .BuildMockDbSet();
 
@@ -36,8 +36,11 @@ namespace TodoApp.Data.Tests.Providers
         public async Task Get_Returns_Category()
         {
             IAsyncDataProvider<CategoryDAO> provider = new CategoryProvider(mockContext.Object);
-            var category = await provider.Get(1);
-            Assert.Equal("BBB", category.Name);
+            int idCategoryToGet = 1;
+
+            var category = await provider.Get(idCategoryToGet);
+
+            Assert.Equal(idCategoryToGet, category.Id);
         }
         [Fact]
         public async Task GetAll_Returns_CategoryList()
@@ -50,7 +53,7 @@ namespace TodoApp.Data.Tests.Providers
         public async Task Create_Returns_createdIdAndAddsCategory()
         {
             IAsyncDataProvider<CategoryDAO> provider = new CategoryProvider(mockContext.Object);
-            var category = new CategoryDAO { Id = 22, Name = "TestCategory" };
+            var category = new CategoryDAO { Id = 22, Name = "AddedCategory" };
 
             var addedCategoyId = await provider.Create(category);
 
@@ -59,7 +62,7 @@ namespace TodoApp.Data.Tests.Providers
             Assert.Equal(category.Id, addedCategoyId);
         }
         [Fact]
-        public async Task CreateThrowsExeptionWhenNameIsShorterThan2Letters()
+        public async Task Create_ThrowsExeption_NameIsShorterThan2Letters()
         {
             IAsyncDataProvider<CategoryDAO> provider = new CategoryProvider(mockContext.Object);
             var category = new CategoryDAO { Id = 22, Name = "A" };
