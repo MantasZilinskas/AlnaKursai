@@ -84,6 +84,15 @@ namespace TodoApp.Data.Tests.Providers
             Assert.Equal("TestUpdateTodoItem", updatedTodoItem.Name);
         }
         [Fact]
+        public async Task Update_ThrowsExeption_DuplicateName()
+        {
+            IAsyncDataProvider<TodoItemDAO> provider = new TodoItemProvider(mockContext.Object);
+            var item = new TodoItemDAO { Id = 22, Name = "TestItem1" };
+
+            await Assert.ThrowsAsync<ArgumentException>(() => provider.Update(item));
+
+        }
+        [Fact]
         public async Task Delete_Removes_TodoItem()
         {
             var dbContext = new Mock<TodoAppContext>();
