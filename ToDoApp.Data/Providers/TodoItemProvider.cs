@@ -28,6 +28,10 @@ namespace TodoApp.Data.Providers
             {
                 throw new ArgumentException(String.Format("Item with the name {0} already exists", data.Name));
             }
+            if(data.Priority > 5 || data.Priority < 1)
+            {
+                throw new ArgumentException("Priority value falls out of 1 to 5 range");
+            }
             _context.TodoItems.Add(data);
             await _context.SaveChangesAsync();
             return data.Id;
