@@ -9,6 +9,7 @@ using TodoApp.Data.Models;
 using TodoApp.Data.Providers;
 using Xunit;
 using static TodoApp.Data.Tests.TestClasses;
+using TodoApp.Data.Interfaces;
 
 namespace TodoApp.Data.Tests.Providers
 {
@@ -32,7 +33,7 @@ namespace TodoApp.Data.Tests.Providers
         }
         [Fact]
         public async Task Get_Returns_Category()
-        { 
+        {
             var provider = new CategoryProvider(mockContext.Object);
             var category = await provider.Get(1);
             Assert.Equal("BBB", category.Name);
@@ -66,6 +67,32 @@ namespace TodoApp.Data.Tests.Providers
             var updatedCategory = await provider.Get(category.Id);
 
             Assert.Equal("TestUpdateCategory", updatedCategory.Name);
+        }
+        [Fact]
+        public async Task Delete_Removes_Category()
+        {
+            var dbContext = new Mock<TodoAppContext>();
+            IAsyncDataProvider<CategoryDAO> provider = new CategoryProvider(dbContext.Object);
+            var categories = new List<CategoryDAO>()
+            {
+                new CategoryDAO() { Id = 1, Name = "John" },
+                new CategoryDAO() { Id = 2, Name = "Pete" },
+                 new CategoryDAO() { Id = 3, Name = "Tete" }
+            };
+            dbContext
+                .Setup(m => m.Categories.Remove(It.IsAny<CategoryDAO>()))
+                .Callback<CategoryDAO>((entity) => categories.Remove(entity));
+            int idToDelete = 1;
+            dbContext
+                .Setup(s => s.Categories.Find(idToDelete))
+                .Returns(categories.Single(s => s.Id == idToDelete));
+
+            await provider.Delete(idToDelete);
+
+            Assert.Equal(2, categories.Count());
+            dbContext.Verify(s => s.Categories.Find(idToDelete), Times.Once);
+            dbContext.Verify(s => s.Categories.Remove(It.IsAny<CategoryDAO>()), Times.Once);
+            dbContext.Verify(s => s.SaveChangesAsync(new CancellationToken()), Times.Once);
         }
 
     }
