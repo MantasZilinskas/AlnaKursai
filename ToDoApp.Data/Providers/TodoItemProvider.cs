@@ -49,6 +49,10 @@ namespace TodoApp.Data.Providers
 
         public async Task Update(TodoItemDAO data)
         {
+            if (await IsDuplicate(data))
+            {
+                throw new ArgumentException(String.Format("Item with the name {0} already exists", data.Name));
+            }
             TodoItemDAO item = await _context.TodoItems.FirstOrDefaultAsync(value => value.Id == data.Id);
             item.Name = data.Name;
             item.Description = data.Description;
