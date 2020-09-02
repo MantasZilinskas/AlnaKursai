@@ -19,6 +19,10 @@ namespace TodoApp.Data.Providers
         }
         public async Task<int> Create(CategoryDAO data)
         {
+            if(data.Name.Length <= 2)
+            {
+                throw new ArgumentException("Category name must be longer than 2 letters");
+            }
             _context.Categories.Add(data);
             await _context.SaveChangesAsync();
             return data.Id;
