@@ -79,8 +79,7 @@ namespace TodoApp.Data.Tests.Providers
             {
                 Id = 22,
                 Name = "TestItem1",
-                CreationDate = new DateTime(2020, 04, 21),
-                DeadLineDate = new DateTime(2020, 03, 21)
+                DeadLineDate = DateTime.UtcNow.Subtract(new TimeSpan(1,0,0))
             };
 
             await Assert.ThrowsAsync<ArgumentException>(() => provider.Create(item));
