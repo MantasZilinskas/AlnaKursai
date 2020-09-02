@@ -75,9 +75,9 @@ namespace TodoApp.Data.Tests.Providers
             IAsyncDataProvider<CategoryDAO> provider = new CategoryProvider(dbContext.Object);
             var categories = new List<CategoryDAO>()
             {
-                new CategoryDAO() { Id = 1, Name = "John" },
-                new CategoryDAO() { Id = 2, Name = "Pete" },
-                 new CategoryDAO() { Id = 3, Name = "Tete" }
+                new CategoryDAO() { Id = 1, Name = "TestCategory1" },
+                new CategoryDAO() { Id = 2, Name = "TestCategory2" },
+                 new CategoryDAO() { Id = 3, Name = "TestCategory3" }
             };
             dbContext
                 .Setup(m => m.Categories.Remove(It.IsAny<CategoryDAO>()))
