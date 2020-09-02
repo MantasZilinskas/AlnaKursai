@@ -19,6 +19,11 @@ namespace TodoApp.Data.Providers
         }
         public async Task<int> Create(TodoItemDAO data)
         {
+            data.CreationDate = DateTime.UtcNow;
+            if(data.CreationDate >= data.DeadLineDate)
+            {
+                throw new ArgumentException("Deadline date must be after the creation date");
+            }
             if (await IsDuplicate(data))
             {
                 throw new ArgumentException(String.Format("Item with the name {0} already exists", data.Name));
