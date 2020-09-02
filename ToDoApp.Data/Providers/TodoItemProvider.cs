@@ -19,6 +19,10 @@ namespace TodoApp.Data.Providers
         }
         public async Task<int> Create(TodoItemDAO data)
         {
+            if (await IsDuplicate(data))
+            {
+                throw new ArgumentException(String.Format("Item with the name {0} already exists", data.Name));
+            }
             _context.TodoItems.Add(data);
             await _context.SaveChangesAsync();
             return data.Id;
