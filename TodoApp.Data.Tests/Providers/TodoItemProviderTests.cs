@@ -71,6 +71,21 @@ namespace TodoApp.Data.Tests.Providers
             await Assert.ThrowsAsync<ArgumentException>(() => provider.Create(item));
 
         }
+        [Fact]
+        public async Task Create_ThrowsExeption_InvalidDeadlineDate()
+        {
+            IAsyncDataProvider<TodoItemDAO> provider = new TodoItemProvider(mockContext.Object);
+            var item = new TodoItemDAO
+            {
+                Id = 22,
+                Name = "TestItem1",
+                CreationDate = new DateTime(2020, 04, 21),
+                DeadLineDate = new DateTime(2020, 03, 21)
+            };
+
+            await Assert.ThrowsAsync<ArgumentException>(() => provider.Create(item));
+
+        }
 
         [Fact]
         public async Task Update_Updates_TodoItem()
