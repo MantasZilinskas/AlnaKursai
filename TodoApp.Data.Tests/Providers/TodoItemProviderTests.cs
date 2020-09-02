@@ -83,7 +83,18 @@ namespace TodoApp.Data.Tests.Providers
             };
 
             await Assert.ThrowsAsync<ArgumentException>(() => provider.Create(item));
+        }
+        [Fact]
+        public async Task Create_ThrowsExeption_PriorityOutOf1to5Range()
+        {
+            IAsyncDataProvider<TodoItemDAO> provider = new TodoItemProvider(mockContext.Object);
+            var item = new TodoItemDAO
+            {
+                Id = 22,
+                Priority = 10
+            };
 
+            await Assert.ThrowsAsync<ArgumentException>(() => provider.Create(item));
         }
 
         [Fact]
