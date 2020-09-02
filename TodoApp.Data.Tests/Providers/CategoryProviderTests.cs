@@ -10,6 +10,7 @@ using TodoApp.Data.Providers;
 using Xunit;
 using static TodoApp.Data.Tests.TestClasses;
 using TodoApp.Data.Interfaces;
+using System;
 
 namespace TodoApp.Data.Tests.Providers
 {
@@ -56,6 +57,14 @@ namespace TodoApp.Data.Tests.Providers
             mockSet.Verify(set => set.Add(It.IsAny<CategoryDAO>()), Times.Once);
             mockContext.Verify(context => context.SaveChangesAsync(new CancellationToken()), Times.Once);
             Assert.Equal(category.Id, addedCategoyId);
+        }
+        [Fact]
+        public async Task CreateThrowsExeptionWhenNameIsShorterThan2Letters()
+        {
+            IAsyncDataProvider<CategoryDAO> provider = new CategoryProvider(mockContext.Object);
+            var category = new CategoryDAO { Id = 22, Name = "A" };
+
+            await Assert.ThrowsAsync<ArgumentException>(() => provider.Create(category));
         }
         [Fact]
         public async Task Update_Updates_Category()
