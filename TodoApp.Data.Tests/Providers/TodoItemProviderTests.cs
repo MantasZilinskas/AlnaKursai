@@ -49,7 +49,7 @@ namespace TodoApp.Data.Tests.Providers
         [Fact]
         public async Task Create_Returns_createdIdAndAddsTodoItem()
         {
-            var provider = new TodoItemProvider(mockContext.Object);
+            IAsyncDataProvider<TodoItemDAO> provider = new TodoItemProvider(mockContext.Object);
             var item = new TodoItemDAO { Id = 22, Name = "TestTodoItem" };
 
             var addedItemId = await provider.Create(item);
@@ -61,7 +61,7 @@ namespace TodoApp.Data.Tests.Providers
         [Fact]
         public async Task Update_Updates_TodoItem()
         {
-            var provider = new TodoItemProvider(mockContext.Object);
+            IAsyncDataProvider<TodoItemDAO> provider = new TodoItemProvider(mockContext.Object);
             var item = new TodoItemDAO { Id = 1, Name = "TestUpdateTodoItem" };
 
             await provider.Update(item);

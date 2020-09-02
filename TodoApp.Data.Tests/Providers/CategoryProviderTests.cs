@@ -34,21 +34,21 @@ namespace TodoApp.Data.Tests.Providers
         [Fact]
         public async Task Get_Returns_Category()
         {
-            var provider = new CategoryProvider(mockContext.Object);
+            IAsyncDataProvider<CategoryDAO> provider = new CategoryProvider(mockContext.Object);
             var category = await provider.Get(1);
             Assert.Equal("BBB", category.Name);
         }
         [Fact]
         public async Task GetAll_Returns_CategoryList()
         {
-            var provider = new CategoryProvider(mockContext.Object);
+            IAsyncDataProvider<CategoryDAO> provider = new CategoryProvider(mockContext.Object);
             var categories = await provider.GetAll();
             Assert.Equal(3, categories.Count());
         }
         [Fact]
         public async Task Create_Returns_createdIdAndAddsCategory()
         {
-            var provider = new CategoryProvider(mockContext.Object);
+            IAsyncDataProvider<CategoryDAO> provider = new CategoryProvider(mockContext.Object);
             var category = new CategoryDAO { Id = 22, Name = "TestCategory" };
 
             var addedCategoyId = await provider.Create(category);
@@ -60,7 +60,7 @@ namespace TodoApp.Data.Tests.Providers
         [Fact]
         public async Task Update_Updates_Category()
         {
-            var provider = new CategoryProvider(mockContext.Object);
+            IAsyncDataProvider<CategoryDAO> provider = new CategoryProvider(mockContext.Object);
             var category = new CategoryDAO { Id = 1, Name = "TestUpdateCategory" };
 
             await provider.Update(category);
