@@ -9,7 +9,7 @@ using TodoApp.Data.Models;
 
 namespace TodoApp.Data.Providers
 {
-    public class TodoItemProvider : IAsyncDataProvider<TodoItemDAO>
+    public class TodoItemProvider : ITodoItemProvider
     {
         private readonly TodoAppContext _context;
 
@@ -78,6 +78,10 @@ namespace TodoApp.Data.Providers
         public async Task<bool> Exists(int? id)
         {
             return await _context.TodoItems.AnyAsync(value => value.Id == id);
+        }
+        public async Task<bool> WipStatusWithPriority1Exists()
+        {
+            return await _context.TodoItems.AnyAsync(value => value.Priority == 1 && value.Status == Models.Enums.Status.Wip);
         }
     }
 }
