@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using TodoApp.Commons.Enums;
 using TodoApp.Data.Context;
@@ -82,6 +83,11 @@ namespace TodoApp.Data.Providers
         public async Task<bool> WipStatusWithPriority1Exists()
         {
             return await _context.TodoItems.AnyAsync(value => value.Priority == 1 && value.Status == Status.Wip);
+        }
+        public async Task<bool> ThreeItemsOfWipStatusWithPriority2Exists()
+        {
+            var items = await _context.TodoItems.Where(item => item.Status == Status.Wip && item.Priority == 2).ToListAsync();
+            return items.Count() >= 3;
         }
     }
 }

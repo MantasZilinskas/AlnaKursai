@@ -31,7 +31,14 @@ namespace TodoApp.Buisiness.Services
             {
                 if(todoItem.Priority == 1 && todoItem.Status == Status.Wip)
                 {
-                    throw new ArgumentException("Only 1 Wip status item with priority 1 can exists");
+                    throw new ArgumentException("Only 1 Wip status item with priority 1 can exist");
+                }
+            }
+            if(await _dataProvider.ThreeItemsOfWipStatusWithPriority2Exists())
+            {
+                if (todoItem.Priority == 2 && todoItem.Status == Status.Wip)
+                {
+                    throw new ArgumentException("Only 3 Wip status items with priority 2 can exist");
                 }
             }
             int createdId = await _dataProvider.Create(_mapper.Map<TodoItemDAO>(todoItem));

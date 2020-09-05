@@ -14,5 +14,6 @@ namespace TodoApp.Data.Interfaces
         public Task<bool> IsDuplicate(TodoItemDAO data);
         public Task<bool> Exists(int? id);
         public Task<bool> WipStatusWithPriority1Exists();
+        public Task<bool> ThreeItemsOfWipStatusWithPriority2Exists();
     }
 }
