@@ -39,5 +39,14 @@ namespace TodoApp.Buisiness.Tests.Services
 
             await Assert.ThrowsAsync<ArgumentException>(() => _todoItemService.Create(item));
         }
+        [Fact]
+        public async Task Create_ThrowsExeption_3ItemsOfWipStatusWithPriority2AlreadyExists()
+        {
+            var item = new TodoItemVO { Id = 22, Priority = 2, Status = Status.Wip };
+
+            _todoItemProvider.Setup(provider => provider.ThreeItemsOfWipStatusWithPriority2Exists()).Returns(Task.FromResult(true));
+
+            await Assert.ThrowsAsync<ArgumentException>(() => _todoItemService.Create(item));
+        }
     }
 }
