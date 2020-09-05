@@ -38,16 +38,6 @@ namespace TodoApp.Data.Tests
                 return _inner.Execute<TResult>(expression);
             }
 
-            //public IAsyncEnumerable<TResult> ExecuteAsync<TResult>(Expression expression)
-            //{
-            //    return new TestAsyncEnumerable<TResult>(expression);
-            //}
-
-            //public Task<TResult> ExecuteAsync<TResult>(Expression expression, CancellationToken cancellationToken)
-            //{
-            //    return Task.FromResult(Execute<TResult>(expression));
-            //}
-
             TResult IAsyncQueryProvider.ExecuteAsync<TResult>(Expression expression, CancellationToken cancellationToken)
             {
                 var expectedResultType = typeof(TResult).GetGenericArguments()[0];
