@@ -1,15 +1,12 @@
 ﻿using AutoMapper;
-using Castle.DynamicProxy.Generators;
 using Moq;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using TodoApp.Buisiness.Mapping;
 using TodoApp.Buisiness.Models;
 using TodoApp.Buisiness.Services;
+using TodoApp.Commons.Enums;
 using TodoApp.Data.Interfaces;
-using TodoApp.Data.Models;
 using Xunit;
 
 namespace TodoApp.Buisiness.Tests.Services
@@ -36,7 +33,7 @@ namespace TodoApp.Buisiness.Tests.Services
         [Fact]
         public async Task Create_ThrowsExeption_ItemOfWipStatusWithPriority1AlreadyExists()
         {
-            var item = new TodoItemVO { Id = 22, Priority = 1, Status = Models.Enums.Status.Wip };
+            var item = new TodoItemVO { Id = 22, Priority = 1, Status = Status.Wip };
 
             _todoItemProvider.Setup(provider => provider.WipStatusWithPriority1Exists() ).Returns(Task.FromResult(true));
 

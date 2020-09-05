@@ -6,6 +6,7 @@ using TodoApp.Buisiness.Models;
 using AutoMapper;
 using TodoApp.Data.Models;
 using System;
+using TodoApp.Commons.Enums;
 
 namespace TodoApp.Buisiness.Services
 {
@@ -28,7 +29,7 @@ namespace TodoApp.Buisiness.Services
             }
             if(await _dataProvider.WipStatusWithPriority1Exists())
             {
-                if(todoItem.Priority == 1 && todoItem.Status == Models.Enums.Status.Wip)
+                if(todoItem.Priority == 1 && todoItem.Status == Status.Wip)
                 {
                     throw new ArgumentException("Only 1 Wip status item with priority 1 can exists");
                 }

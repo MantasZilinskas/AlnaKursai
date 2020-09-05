@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ToDoApp.Buisiness\TodoApp.Buisiness.csproj" />
+    <ProjectReference Include="..\TodoApp.Commons\TodoApp.Commons.csproj" />
   </ItemGroup>
 
 </Project>

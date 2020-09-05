@@ -40,7 +40,7 @@ namespace TodoApp.Web
             services.AddScoped<IAsyncDataService<TagVO>, TagService>();
             services.AddScoped<IItemTagService, ItemTagService>();
 
-            services.AddScoped<IAsyncDataProvider<TodoItemDAO>, TodoItemProvider>();
+            services.AddScoped<ITodoItemProvider, TodoItemProvider>();
             services.AddScoped<IAsyncDataProvider<CategoryDAO>, CategoryProvider>();
             services.AddScoped<IAsyncDataProvider<TagDAO>, TagProvider>();
             services.AddScoped<IItemTagProvider, ItemTagProvider>();
