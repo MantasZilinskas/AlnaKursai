@@ -13,8 +13,8 @@ namespace TodoApp.ClientsAndProjects.Api.Data.Context
         {
         }
 
-        public DbSet<Client> Clients { get; set; }
+        public DbSet<ClientDAO> Clients { get; set; }
 
-        public DbSet<Project> Projects { get; set; }
+        public DbSet<ProjectDAO> Projects { get; set; }
     }
 }

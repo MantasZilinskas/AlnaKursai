@@ -23,14 +23,14 @@ namespace TodoApp.ClientsAndProjects.Api.Controllers
 
         // GET: api/Projects
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Project>>> GetProjects()
+        public async Task<ActionResult<IEnumerable<ProjectDAO>>> GetProjects()
         {
             return await _context.Projects.ToListAsync();
         }
 
         // GET: api/Projects/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Project>> GetProject(int id)
+        public async Task<ActionResult<ProjectDAO>> GetProject(int id)
         {
             var project = await _context.Projects.FindAsync(id);
 
@@ -46,7 +46,7 @@ namespace TodoApp.ClientsAndProjects.Api.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutProject(int id, Project project)
+        public async Task<IActionResult> PutProject(int id, ProjectDAO project)
         {
             if (id != project.Id)
             {
@@ -78,7 +78,7 @@ namespace TodoApp.ClientsAndProjects.Api.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<Project>> PostProject(Project project)
+        public async Task<ActionResult<ProjectDAO>> PostProject(ProjectDAO project)
         {
             _context.Projects.Add(project);
             await _context.SaveChangesAsync();
@@ -88,7 +88,7 @@ namespace TodoApp.ClientsAndProjects.Api.Controllers
 
         // DELETE: api/Projects/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Project>> DeleteProject(int id)
+        public async Task<ActionResult<ProjectDAO>> DeleteProject(int id)
         {
             var project = await _context.Projects.FindAsync(id);
             if (project == null)

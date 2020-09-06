@@ -23,14 +23,14 @@ namespace TodoApp.ClientsAndProjects.Api.Controllers
 
         // GET: api/Clients
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Client>>> GetClients()
+        public async Task<ActionResult<IEnumerable<ClientDAO>>> GetClients()
         {
             return await _context.Clients.ToListAsync();
         }
 
         // GET: api/Clients/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Client>> GetClient(int id)
+        public async Task<ActionResult<ClientDAO>> GetClient(int id)
         {
             var client = await _context.Clients.FindAsync(id);
 
@@ -46,7 +46,7 @@ namespace TodoApp.ClientsAndProjects.Api.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutClient(int id, Client client)
+        public async Task<IActionResult> PutClient(int id, ClientDAO client)
         {
             if (id != client.Id)
             {
@@ -78,7 +78,7 @@ namespace TodoApp.ClientsAndProjects.Api.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<Client>> PostClient(Client client)
+        public async Task<ActionResult<ClientDAO>> PostClient(ClientDAO client)
         {
             _context.Clients.Add(client);
             await _context.SaveChangesAsync();
@@ -88,7 +88,7 @@ namespace TodoApp.ClientsAndProjects.Api.Controllers
 
         // DELETE: api/Clients/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Client>> DeleteClient(int id)
+        public async Task<ActionResult<ClientDAO>> DeleteClient(int id)
         {
             var client = await _context.Clients.FindAsync(id);
             if (client == null)

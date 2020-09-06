@@ -21,12 +21,12 @@ namespace TodoApp.ClientsAndProjects.Api.Controllers
         }
 
         [HttpGet("{clientId}")]
-        public async Task<IEnumerable<Project>> GetClientProjects(int clientId)
+        public async Task<IEnumerable<ProjectDAO>> GetClientProjects(int clientId)
         {
             return await _context.Projects.Where(project => project.ClientId == clientId).ToListAsync();
         }
         [HttpPost("{clientId}")]
-        public async Task<IActionResult> CreateClientProject(Project project, int clientId)
+        public async Task<IActionResult> CreateClientProject(ProjectDAO project, int clientId)
         {
             project.ClientId = clientId;
             _context.Projects.Add(project);
@@ -34,7 +34,7 @@ namespace TodoApp.ClientsAndProjects.Api.Controllers
             return Created($"api/Projects/GetProject/{project.Id}", project);
         }
         [HttpDelete("{clientId}/{projectId}")]
-        public async Task<ActionResult<Project>> DeleteClientProject(int clientId, int projectId)
+        public async Task<ActionResult<ProjectDAO>> DeleteClientProject(int clientId, int projectId)
         {
             var project = await _context.Projects
                 .FirstOrDefaultAsync(project => project.ClientId == clientId && project.Id == projectId);
@@ -50,7 +50,7 @@ namespace TodoApp.ClientsAndProjects.Api.Controllers
             return project;
         }
         [HttpPut("{clientId}/{projectId}")]
-        public async Task<IActionResult> EditProjectClient(int projectId, int clientId, Client client)
+        public async Task<IActionResult> EditProjectClient(int projectId, int clientId, ClientDAO client)
         {
             if (clientId != client.Id)
             {
