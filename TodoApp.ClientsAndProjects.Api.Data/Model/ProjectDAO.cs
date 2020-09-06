@@ -11,7 +11,7 @@ namespace TodoApp.ClientsAndProjects.Api.Data.Model
         [Required]
         public string Name { get; set; }
         public string Description { get; set; }
-        public int ClientId { get; set; }
+        public int? ClientId { get; set; }
         public ClientDAO Client { get; set; }
     }
 }
