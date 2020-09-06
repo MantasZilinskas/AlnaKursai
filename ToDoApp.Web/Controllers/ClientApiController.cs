@@ -4,21 +4,29 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using TodoApp.ClientsAndProjects.ApiClient;
 
 namespace TodoApp.Web.Controllers
 {
     public class ClientApiController : Controller
     {
-        // GET: ClientApiController
-        public ActionResult Index()
+        private readonly Client apiClient;
+
+        public ClientApiController(Client apiClient)
         {
-            return View();
+            this.apiClient = apiClient;
+        }
+
+        // GET: ClientApiController
+        public async Task<ActionResult> Index()
+        {
+            return View(await apiClient.ApiClientsGetAsync());
         }
 
         // GET: ClientApiController/Details/5
-        public ActionResult Details(int id)
+        public async Task<ActionResult> Details(int id)
         {
-            return View();
+            return View(await apiClient.ApiClientsGetAsync(id));
         }
 
         // GET: ClientApiController/Create
@@ -30,57 +38,62 @@ namespace TodoApp.Web.Controllers
         // POST: ClientApiController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<ActionResult> Create(ClientDAO client)
         {
             try
             {
+                await apiClient.ApiClientsPostAsync(client);
                 return RedirectToAction(nameof(Index));
             }
             catch
             {
-                return View();
+                return View(client);
             }
         }
 
         // GET: ClientApiController/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<ActionResult> Edit(int id)
         {
-            return View();
+            var client = await apiClient.ApiClientsGetAsync(id);
+            return View(client);
         }
 
         // POST: ClientApiController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<ActionResult> Edit(int id, ClientDAO client)
         {
             try
             {
+                await apiClient.ApiClientsPutAsync(id, client);
                 return RedirectToAction(nameof(Index));
             }
             catch
             {
-                return View();
+                return View(client);
             }
         }
 
         // GET: ClientApiController/Delete/5
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            return View();
+            var client = await apiClient.ApiClientsGetAsync(id);
+            return View(client);
         }
 
         // POST: ClientApiController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<ActionResult> Delete(int id, ClientDAO client)
         {
             try
             {
+                await apiClient.ApiClientsDeleteAsync(id);
                 return RedirectToAction(nameof(Index));
             }
             catch
             {
-                return View();
+                return View(client);
             }
         }
     }
