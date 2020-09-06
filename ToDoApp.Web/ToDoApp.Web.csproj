@@ -9,10 +9,12 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="10.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.0.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.4" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\ToDoApp.Buisiness\TodoApp.Buisiness.csproj" />
+    <ProjectReference Include="..\TodoApp.ClientsAndProjects.ApiClient\TodoApp.ClientsAndProjects.ApiClient.csproj" />
   </ItemGroup>
 
 </Project>
