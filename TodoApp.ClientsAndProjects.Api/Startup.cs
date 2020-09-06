@@ -22,6 +22,8 @@ namespace TodoApp.ClientsAndProjects.Api
         {
             services.AddControllers();
 
+            services.AddSwaggerGen();
+
             services.AddDbContext<ClientProjectApiContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("ClientProjectApiContext")));
         }
@@ -33,6 +35,9 @@ namespace TodoApp.ClientsAndProjects.Api
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseSwagger();
+            app.UseSwaggerUI(config => config.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1"));
 
             app.UseHttpsRedirection();
 
