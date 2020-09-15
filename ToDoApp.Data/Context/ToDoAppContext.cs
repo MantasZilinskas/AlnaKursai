@@ -1,23 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using TodoApp.Data.Models;
 
 namespace TodoApp.Data.Context
 {
-    public class ToDoAppContext : DbContext
+    public class TodoAppContext : DbContext
     {
-        public ToDoAppContext (DbContextOptions<ToDoAppContext> options)
+        public TodoAppContext()
+        {
+        }
+        public TodoAppContext(DbContextOptions<TodoAppContext> options)
             : base(options)
         {
         }
 
-        public DbSet<TodoItemDAO> TodoItems { get; set; }
-        public DbSet<CategoryDAO> Categories { get; set; }
-        public DbSet<TagDAO> Tags { get; set; }
-        public DbSet<ItemTagDAO> ItemTags { get; set; }
+        public virtual DbSet<TodoItemDAO> TodoItems { get; set; }
+        public virtual DbSet<CategoryDAO> Categories { get; set; }
+        public virtual DbSet<TagDAO> Tags { get; set; }
+        public virtual DbSet<ItemTagDAO> ItemTags { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

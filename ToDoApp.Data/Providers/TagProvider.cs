@@ -11,9 +11,9 @@ namespace TodoApp.Data.Providers
 {
     public class TagProvider : IAsyncDataProvider<TagDAO>
     {
-        private readonly ToDoAppContext _context;
+        private readonly TodoAppContext _context;
 
-        public TagProvider(ToDoAppContext context)
+        public TagProvider(TodoAppContext context)
         {
             _context = context;
         }

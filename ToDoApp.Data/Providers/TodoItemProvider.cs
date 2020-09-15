@@ -3,25 +3,39 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TodoApp.Commons.Enums;
 using TodoApp.Data.Context;
 using TodoApp.Data.Interfaces;
 using TodoApp.Data.Models;
 
 namespace TodoApp.Data.Providers
 {
-    public class TodoItemProvider : IAsyncDataProvider<TodoItemDAO>
+    public class TodoItemProvider : ITodoItemProvider
     {
-        private readonly ToDoAppContext _context;
+        private readonly TodoAppContext _context;
 
-        public TodoItemProvider(ToDoAppContext context)
+        public TodoItemProvider(TodoAppContext context)
         {
             _context = context;
         }
         public async Task<int> Create(TodoItemDAO data)
         {
-            TodoItemDAO addedItem = _context.TodoItems.Add(data).Entity;
+            data.CreationDate = DateTime.UtcNow;
+            if(data.CreationDate >= data.DeadLineDate)
+            {
+                throw new ArgumentException("Deadline date must be after the creation date");
+            }
+            if (await IsDuplicate(data))
+            {
+                throw new ArgumentException(String.Format("Item with the name {0} already exists", data.Name));
+            }
+            if(data.Priority > 5 || data.Priority < 1)
+            {
+                throw new ArgumentException("Priority value falls out of 1 to 5 range");
+            }
+            _context.TodoItems.Add(data);
             await _context.SaveChangesAsync();
-            return addedItem.Id;
+            return data.Id;
         }
 
         public async Task Delete(int id)
@@ -45,6 +59,10 @@ namespace TodoApp.Data.Providers
 
         public async Task Update(TodoItemDAO data)
         {
+            if (await IsDuplicate(data))
+            {
+                throw new ArgumentException(String.Format("Item with the name {0} already exists", data.Name));
+            }
             TodoItemDAO item = await _context.TodoItems.FirstOrDefaultAsync(value => value.Id == data.Id);
             item.Name = data.Name;
             item.Description = data.Description;
@@ -61,6 +79,15 @@ namespace TodoApp.Data.Providers
         public async Task<bool> Exists(int? id)
         {
             return await _context.TodoItems.AnyAsync(value => value.Id == id);
+        }
+        public async Task<bool> WipStatusWithPriority1Exists()
+        {
+            return await _context.TodoItems.AnyAsync(value => value.Priority == 1 && value.Status == Status.Wip);
+        }
+        public async Task<bool> ThreeItemsOfWipStatusWithPriority2Exists()
+        {
+            var items = await _context.TodoItems.Where(item => item.Status == Status.Wip && item.Priority == 2).ToListAsync();
+            return items.Count() >= 3;
         }
     }
 }
