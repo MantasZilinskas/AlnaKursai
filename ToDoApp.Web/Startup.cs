@@ -10,6 +10,7 @@ using System.Linq;
 using TodoApp.Buisiness.Interfaces;
 using TodoApp.Buisiness.Models;
 using TodoApp.Buisiness.Services;
+using TodoApp.ClientsAndProjects.ApiClient;
 using TodoApp.Data.Context;
 using TodoApp.Data.Interfaces;
 using TodoApp.Data.Models;
@@ -34,6 +35,7 @@ namespace TodoApp.Web
 
             services.AddSingleton(typeof(IDataService<>), typeof(DataService<>));
             services.AddSingleton(typeof(IDataProvider<>), typeof(InMemoryDataProvider<>));
+            services.AddSingleton(new Client("http://localhost:56001"));
 
             services.AddScoped<IAsyncDataService<TodoItemVO>, TodoItemService>();
             services.AddScoped<IAsyncDataService<CategoryVO>, CategoryService>();
