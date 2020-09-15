@@ -14,7 +14,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ToDoApp.Buisiness\TodoApp.Buisiness.csproj" />
+
     <ProjectReference Include="..\TodoApp.ClientsAndProjects.ApiClient\TodoApp.ClientsAndProjects.ApiClient.csproj" />
+
+    <ProjectReference Include="..\TodoApp.Commons\TodoApp.Commons.csproj" />
   </ItemGroup>
 
 </Project>

@@ -11,17 +11,21 @@ namespace TodoApp.Data.Providers
 {
     public class CategoryProvider : IAsyncDataProvider<CategoryDAO>
     {
-        private readonly ToDoAppContext _context;
+        private readonly TodoAppContext _context;
 
-        public CategoryProvider(ToDoAppContext context)
+        public CategoryProvider(TodoAppContext context)
         {
             _context = context;
         }
         public async Task<int> Create(CategoryDAO data)
         {
-            CategoryDAO addedCategory = _context.Categories.Add(data).Entity;
+            if(data.Name.Length <= 2)
+            {
+                throw new ArgumentException("Category name must be longer than 2 letters");
+            }
+            _context.Categories.Add(data);
             await _context.SaveChangesAsync();
-            return addedCategory.Id;
+            return data.Id;
         }
 
         public async Task Delete(int id)

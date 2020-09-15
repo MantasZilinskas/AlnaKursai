@@ -6,15 +6,16 @@ using TodoApp.Buisiness.Models;
 using AutoMapper;
 using TodoApp.Data.Models;
 using System;
+using TodoApp.Commons.Enums;
 
 namespace TodoApp.Buisiness.Services
 {
     public class TodoItemService : IAsyncDataService<TodoItemVO>
     {
-        private readonly IAsyncDataProvider<TodoItemDAO> _dataProvider;
+        private readonly ITodoItemProvider _dataProvider;
         private readonly IMapper _mapper;
 
-        public TodoItemService(IAsyncDataProvider<TodoItemDAO> dataProvider, IMapper mapper)
+        public TodoItemService(ITodoItemProvider dataProvider, IMapper mapper)
         {
             _dataProvider = dataProvider;
             _mapper = mapper;
@@ -25,6 +26,20 @@ namespace TodoApp.Buisiness.Services
             if (await _dataProvider.IsDuplicate(_mapper.Map<TodoItemDAO>(todoItem)))
             {
                 throw new ArgumentException("An item with the name " + todoItem.Name + " already exists");
+            }
+            if(await _dataProvider.WipStatusWithPriority1Exists())
+            {
+                if(todoItem.Priority == 1 && todoItem.Status == Status.Wip)
+                {
+                    throw new ArgumentException("Only 1 Wip status item with priority 1 can exist");
+                }
+            }
+            if(await _dataProvider.ThreeItemsOfWipStatusWithPriority2Exists())
+            {
+                if (todoItem.Priority == 2 && todoItem.Status == Status.Wip)
+                {
+                    throw new ArgumentException("Only 3 Wip status items with priority 2 can exist");
+                }
             }
             int createdId = await _dataProvider.Create(_mapper.Map<TodoItemDAO>(todoItem));
             return createdId;

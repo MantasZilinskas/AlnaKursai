@@ -14,9 +14,9 @@ namespace TodoApp.Data.Providers
 {
     public class ItemTagProvider : IItemTagProvider
     {
-        private readonly ToDoAppContext _context;
+        private readonly TodoAppContext _context;
 
-        public ItemTagProvider(ToDoAppContext context)
+        public ItemTagProvider(TodoAppContext context)
         {
             _context = context;
         }

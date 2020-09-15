@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using TodoApp.Web.ViewModels.Enums;
+using TodoApp.Commons.Enums;
 
 namespace TodoApp.Web.ViewModels
 {

@@ -9,7 +9,7 @@ using TodoApp.Data.Context;
 
 namespace TodoApp.Data.Migrations
 {
-    [DbContext(typeof(ToDoAppContext))]
+    [DbContext(typeof(TodoAppContext))]
     [Migration("20200724125351_AddedCategoriesAndTodoItems")]
     partial class AddedCategoriesAndTodoItems
     {
